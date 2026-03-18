@@ -5,7 +5,7 @@ from src.video.transcribe import extract_audio
 from src.video.deepfake import deepfake_risk_score
 
 from src.vision.ocr import extract_text_from_image
-from src.rasid.pipeline_ar_text import analyze_ar_text
+from src.rasid.pipeline_text_auto import analyze_text_auto
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -43,7 +43,7 @@ def analyze_ar_video(video_path: str, frames_fps: float = 1.0, max_frames: int =
 
     # 4) Merge text signals -> analyze
     combined_text = "\n".join([t for t in [ocr_text, transcript_text] if t]).strip()
-    text_result = analyze_ar_text(combined_text if combined_text else " ")
+    text_result = analyze_text_auto(combined_text if combined_text else " ")
 
     # 5) Final decision hierarchy (per your plan)
     decision = text_result["decision"]
