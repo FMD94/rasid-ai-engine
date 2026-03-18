@@ -23,7 +23,7 @@ def analyze_ar_video(video_path: str, frames_fps: float = 1.0, max_frames: int =
 
     # 1) Frames OCR
     frames_dir = ROOT / "data" / "ar" / "videos" / "_frames_tmp"
-    frame_paths = extract_frames(video_path, str(frames_dir), fps=frames_fps, max_frames=max_frames)
+    frame_paths = extract_frames(video_path, str(frames_dir), fps=1, max_frames=25)
 
     ocr_chunks = []
     for fp in frame_paths:
