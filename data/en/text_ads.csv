@@ -1,6 +1,21 @@
 id,text,category,label,source,notes
-1,"Guaranteed profits in 24 hours",finance,blocked,manual,scam claim
-2,"Limited offer today only",retail,flagged,manual,urgency
-3,"Buy one get one free",retail,approved,manual,normal promotion
-4,"Lose 10kg in 7 days guaranteed",health,blocked,manual,medical scam
-5,"Enroll now and change your life",education,flagged,manual,persuasion
+1,"Guaranteed profit within 24 hours",finance,blocked,manual,financial scam claim
+2,"Risk-free investment with high returns",finance,blocked,manual,false financial promise
+3,"Limited offer today only",retail,flagged,manual,urgency tactic
+4,"Exclusive offer for new customers",retail,flagged,manual,pressure marketing
+5,"Buy one get one free",retail,approved,manual,normal promotion
+6,"Lose 10kg in 7 days guaranteed",health,blocked,manual,medical false claim
+7,"Instant results from the first use",health,blocked,manual,medical exaggeration
+8,"Enroll now before seats are gone",education,flagged,manual,urgency pressure
+9,"Best product in the world",retail,flagged,manual,hype claim
+10,"Free training for beginners",education,approved,manual,normal promotion
+11,"Earn fixed income from home",finance,blocked,manual,guaranteed income claim
+12,"Apply now before the deadline",jobs,flagged,manual,pressure language
+13,"New product launched today",retail,approved,manual,normal announcement
+14,"Miracle cure with no side effects",health,blocked,manual,dangerous health claim
+15,"Trending now, don’t miss out",retail,flagged,manual,fomo language
+16,"Free shipping on all orders",retail,approved,manual,normal incentive
+17,"100% success guaranteed",other,blocked,manual,false guarantee
+18,"Special launch price for a limited time",retail,flagged,manual,urgency marketing
+19,"Trusted service with secure payment",other,approved,manual,normal service claim
+20,"Join thousands making money today",finance,flagged,manual,social proof pressure
