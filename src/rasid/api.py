@@ -38,14 +38,19 @@ def analyze_text_auto_endpoint(text: str = Form(...)):
 @app.post("/analyze/image")
 def analyze_image(
     file: UploadFile = File(...),
-    caption_text: str = Form("")
+    caption_text: str = Form(""),
+    language_hint: str = Form("")
 ):
     file_path = UPLOAD_DIR / file.filename
 
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    result = analyze_ar_image(str(file_path), caption_text=caption_text)
+    result = analyze_ar_image(
+        str(file_path),
+        caption_text=caption_text,
+        language_hint=language_hint.strip().lower()
+    )
     return result
 
 
