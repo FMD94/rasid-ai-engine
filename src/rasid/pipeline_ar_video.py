@@ -3,6 +3,7 @@ from pathlib import Path
 from src.video.extract import extract_frames
 from src.video.transcribe import extract_audio
 from src.video.deepfake import deepfake_risk_score
+from src.vision.deepfake_detector import detector
 
 from src.vision.ocr import extract_text_from_image
 from src.rasid.pipeline_text_auto import analyze_text_auto

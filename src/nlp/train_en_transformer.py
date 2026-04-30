@@ -20,8 +20,13 @@ label2id = {"approved": 0, "flagged": 1, "blocked": 2}
 id2label = {0: "approved", 1: "flagged", 2: "blocked"}
 
 df = pd.read_csv(DATA_PATH)
+
+# Keep only needed columns
 df = df[["text", "label"]].dropna()
+
 df["text"] = df["text"].astype(str)
+
+label2id = {"approved": 0, "flagged": 1, "blocked": 2}
 df["label_id"] = df["label"].map(label2id)
 
 train_df, test_df = train_test_split(
@@ -80,7 +85,7 @@ args = TrainingArguments(
     learning_rate=2e-5,
     per_device_train_batch_size=8,
     per_device_eval_batch_size=8,
-    num_train_epochs=3,
+    num_train_epochs=5,
     weight_decay=0.01,
     load_best_model_at_end=True,
     logging_dir=str(OUT_DIR / "logs"),

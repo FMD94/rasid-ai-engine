@@ -1,0 +1,66 @@
+id,text,label,language
+1,"أعلنت الجهات الرسمية عن بدء تنفيذ المشروع",approved,ar
+2,"تناول التقرير أبرز التطورات في القطاع",approved,ar
+3,"شهدت الأسواق تحسنًا ملحوظًا خلال الأسبوع",approved,ar
+4,"ناقش الاجتماع سبل تطوير الخدمات",approved,ar
+5,"تم نشر نتائج الدراسة الجديدة",approved,ar
+6,"لا تفوت هذا العرض لفترة محدودة",flagged,ar
+7,"اكتشف خدماتنا الآن وابدأ اليوم",flagged,ar
+8,"انضم الآن واستفد من المزايا",flagged,ar
+9,"تعرف على أفضل العروض المتاحة",flagged,ar
+10,"ابدأ رحلتك معنا اليوم",flagged,ar
+11,"أرباح مضمونة بدون أي مخاطرة",blocked,ar
+12,"نتائج فورية خلال 24 ساعة فقط",blocked,ar
+13,"استثمر الآن واربح يوميًا بسهولة",blocked,ar
+14,"علاج نهائي لجميع الأمراض",blocked,ar
+15,"اكسب المال بسرعة بدون خبرة",blocked,ar
+16,"The report discusses recent developments in the industry",approved,en
+17,"Officials announced new plans for the project",approved,en
+18,"The study highlights key findings",approved,en
+19,"The company released its quarterly results",approved,en
+20,"The article explores technological advancements",approved,en
+21,"Don’t miss this limited-time offer",flagged,en
+22,"Join now and get exclusive benefits",flagged,en
+23,"Start today and discover our services",flagged,en
+24,"Check out our latest deals",flagged,en
+25,"Sign up now and enjoy the experience",flagged,en
+26,"Earn money instantly with no effort",blocked,en
+27,"Guaranteed results in 24 hours",blocked,en
+28,"Invest now with zero risk",blocked,en
+29,"Miracle cure for all conditions",blocked,en
+30,"Make thousands daily without experience",blocked,en
+31,"استعرض التقرير مستجدات السوق خلال هذا الشهر",approved,ar
+32,"أعلنت الشركة عن افتتاح فرع جديد",approved,ar
+33,"تناولت المقالة أثر التقنية على التعليم",approved,ar
+34,"أوضح المسؤول تفاصيل المبادرة الجديدة",approved,ar
+35,"تم الإعلان عن مواعيد الفعالية القادمة",approved,ar
+
+36,"سجل اليوم للاستفادة من المزايا",flagged,ar
+37,"لا تضيع الفرصة وابدأ الآن",flagged,ar
+38,"اكتشف خدماتنا الجديدة اليوم",flagged,ar
+39,"استفد من العرض قبل انتهائه",flagged,ar
+40,"ابدأ رحلتك الآن معنا",flagged,ar
+
+41,"حقق أرباحًا يومية مضمونة بدون خبرة",blocked,ar
+42,"نتائج مؤكدة خلال ساعات فقط",blocked,ar
+43,"استثمر بأمان تام وبدون أي خسارة",blocked,ar
+44,"علاج مضمون لجميع المشكلات الصحية",blocked,ar
+45,"احصل على دخل ثابت بسرعة وسهولة",blocked,ar
+
+46,"The report reviews recent market updates",approved,en
+47,"The company announced a new branch opening",approved,en
+48,"The article discusses the role of technology in education",approved,en
+49,"Officials shared details about the new initiative",approved,en
+50,"The event schedule was published this week",approved,en
+
+51,"Sign up today to enjoy the benefits",flagged,en
+52,"Don’t miss this chance to get started",flagged,en
+53,"Discover our new services today",flagged,en
+54,"Take advantage of the offer before it ends",flagged,en
+55,"Start your journey with us now",flagged,en
+
+56,"Earn guaranteed daily profits with no experience",blocked,en
+57,"Certain results within just a few hours",blocked,en
+58,"Invest safely with absolutely no losses",blocked,en
+59,"Guaranteed cure for every health condition",blocked,en
+60,"Get fixed income quickly and easily",blocked,en

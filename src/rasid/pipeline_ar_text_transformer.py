@@ -11,7 +11,11 @@ classifier = pipeline(
 )
 
 def analyze_ar_text_transformer(text: str) -> dict:
-    result = classifier(text)[0]
+    result = classifier(
+        text,
+        truncation=True,
+        max_length=512
+    )[0]
 
     return {
         "decision": result["label"].lower(),
