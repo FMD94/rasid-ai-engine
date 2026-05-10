@@ -64,6 +64,9 @@ model = AutoModelForSequenceClassification.from_pretrained(
     label2id=label2id
 )
 
+import torch
+class_weights = torch.tensor([1.0, 2.0, 1.5]).to(model.device)
+
 def compute_metrics(eval_pred):
     logits, labels = eval_pred
     preds = logits.argmax(axis=-1)
@@ -77,7 +80,20 @@ def compute_metrics(eval_pred):
         "macro_precision": precision,
         "macro_recall": recall,
     }
+from transformers import Trainer
+import torch.nn as nn
 
+class WeightedTrainer(Trainer):
+    def compute_loss(self, model, inputs, return_outputs=False):
+        labels = inputs.get("labels")
+
+        outputs = model(**inputs)
+        logits = outputs.get("logits")
+
+        loss_fct = nn.CrossEntropyLoss(weight=class_weights)
+        loss = loss_fct(logits, labels)
+
+        return (loss, outputs) if return_outputs else loss
 args = TrainingArguments(
     output_dir=str(OUT_DIR),
     eval_strategy="epoch",
@@ -92,7 +108,7 @@ args = TrainingArguments(
     report_to="none"
 )
 
-trainer = Trainer(
+trainer = WeightedTrainer(
     model=model,
     args=args,
     train_dataset=train_ds,

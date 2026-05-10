@@ -1,6 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, Form
 from pathlib import Path
 from typing import Optional
+from src.rasid.database import save_analysis_to_db
 import shutil
 import requests
 
@@ -23,6 +24,11 @@ app.add_middleware(
 
 UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
+def save_result(result: dict, source: str, input_type: str):
+    result["input_type"] = input_type
+    save_analysis_log(result, source=source)
+    save_analysis_to_db(result, source=source)
+    return result
 
 
 @app.get("/")
@@ -43,7 +49,7 @@ def analyze_text_en(text: str = Form(...)):
 @app.post("/analyze/text/auto")
 def analyze_text_auto_endpoint(text: str = Form(...)):
     result = analyze_text_auto(text)
-    return result
+    return save_result(result, source="text_auto_api", input_type="text")
 
 @app.post("/analyze/image")
 def analyze_image(
@@ -61,7 +67,7 @@ def analyze_image(
         caption_text=caption_text,
         language_hint=language_hint.strip().lower()
     )
-    return result
+    return save_result(result, source="image_api", input_type="image")
 
 @app.post("/analyze/image-url")
 def analyze_image_url(image_url: str = Form(...)):
@@ -82,8 +88,9 @@ def analyze_image_url(image_url: str = Form(...)):
         result["input_type"] = "image_url"
         result["source_url"] = image_url
         save_analysis_log(result, source="image_url_api")
+        save_analysis_to_db(result, source="text_api")
 
-        return result
+        return save_result(result, source="image_url_api", input_type="image_url")
 
     except Exception as e:
         return {
@@ -100,7 +107,8 @@ def analyze_video(file: UploadFile = File(...)):
         shutil.copyfileobj(file.file, buffer)
 
     result = analyze_ar_video(str(file_path))
-    return result
+    return save_result(result, source="video_api", input_type="video")
+
 @app.post("/analyze/video-url")
 
 def analyze_video_url(video_url: str = Form(...)):
@@ -121,8 +129,9 @@ def analyze_video_url(video_url: str = Form(...)):
         result["input_type"] = "video_url"
         result["source_url"] = video_url
         save_analysis_log(result, source="video_url_api")
+        save_analysis_to_db(result, source="text_api")
 
-        return result
+        return save_result(result, source="video_url_api", input_type="video_url")
 
     except Exception as e:
         return {
@@ -141,6 +150,7 @@ def analyze_unified(
         result = analyze_ar_text(text.strip())
         result["input_type"] = "text"
         save_analysis_log(result, source="text_api")
+        save_analysis_to_db(result, source="text_api")
         return result
 
     # Case 2 or 3: file uploaded
@@ -157,6 +167,7 @@ def analyze_unified(
             result = analyze_ar_image(str(file_path), caption_text=caption_text)
             result["input_type"] = "image"
             save_analysis_log(result, source="image_api")
+            save_analysis_to_db(result, source="text_api")
             return result
 
         # Video types
@@ -164,6 +175,7 @@ def analyze_unified(
             result = analyze_ar_video(str(file_path))
             result["input_type"] = "video"
             save_analysis_log(result, source="video_api")
+            save_analysis_to_db(result, source="text_api")
             return result
 
         return {

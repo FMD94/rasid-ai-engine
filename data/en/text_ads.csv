@@ -106,3 +106,51 @@ id,text,label,language,category,source,is_synthetic,notes
 103,"Get guaranteed weight loss in just days",blocked,en,health,manual,no,"false health claim"
 104,"This remedy works instantly for everyone",blocked,en,health,manual,no,"absolute false promise"
 105,"Make fast profits every day with no experience",blocked,en,finance,manual,no,"scam-like earning claim"
+106,This article explains recent developments in global politics,approved
+107,Learn how to improve your productivity with simple habits,approved
+108,This product review highlights both pros and cons,approved
+109,A balanced diet can contribute to overall health,approved
+110,Technology trends continue to evolve rapidly worldwide,approved
+111,This course helps beginners understand programming basics,approved
+112,Experts discuss economic changes in recent markets,approved
+113,Tips for maintaining a healthy lifestyle daily,approved
+114,A guide to understanding machine learning concepts,approved
+115,News coverage of recent international events,approved
+116,An overview of modern business strategies,approved
+117,This platform offers various educational resources,approved
+118,A neutral analysis of current industry trends,approved
+119,Insights into improving work-life balance,approved
+120,An article about sustainable environmental practices,approved
+121,Make $1000 per day with zero effort guaranteed,blocked
+122,This miracle pill cures all diseases instantly,blocked
+123,Earn money instantly without any experience,blocked
+124,Guaranteed profit investment with no risk,blocked
+125,Lose 10 kg in 2 days with this secret method,blocked
+126,This hidden trick will make you rich overnight,blocked
+127,100% guaranteed success system revealed now,blocked
+128,Instant income from home with no skills needed,blocked
+129,Double your money in just 24 hours,blocked
+130,Secret investment strategy banks don’t want you to know,blocked
+132,Some users reported impressive results,flagged
+134,This system could improve your financial situation,flagged
+135,Try now and see noticeable changes,flagged
+138,Results may vary but many saw improvements,flagged,en
+140,Limited offer available for selected customers,flagged,en
+141,This system could increase your productivity,flagged,en
+142,Users reported moderate success using this platform,flagged,en
+143,This app claims to enhance your daily performance,flagged,en
+144,It is believed this method can boost results,flagged,en
+145,Some evidence suggests this product is effective,flagged,en
+146,Early adopters noticed improvements after using this tool,flagged,en
+149,Users experienced noticeable changes over time,flagged,en
+150,This strategy could improve your financial situation,flagged,en
+151,Act now before this offer disappears,flagged,en
+152,Limited time deal only for selected users,flagged,en
+153,Don’t miss this exclusive opportunity today,flagged,en
+154,Only a few spots left, register now,flagged,en
+155,This offer expires in the next 24 hours,flagged,en
+156,Join thousands who are already benefiting from this,flagged,en
+157,You don’t want to miss this chance,flagged,en
+158,Take advantage of this special promotion today,flagged,en
+159,Start now and see quick improvements,flagged,en
+160,This is your chance to improve your results fast,flagged,en

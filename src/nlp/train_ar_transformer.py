@@ -7,6 +7,7 @@ from transformers import (
     TrainingArguments,
     Trainer
 )
+
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 
@@ -62,6 +63,8 @@ model = AutoModelForSequenceClassification.from_pretrained(
     id2label=id2label,
     label2id=label2id
 )
+import torch
+class_weights = torch.tensor([1.0, 2.0, 1.5]).to(model.device)
 
 def compute_metrics(eval_pred):
     logits, labels = eval_pred
@@ -77,6 +80,21 @@ def compute_metrics(eval_pred):
         "macro_recall": recall,
     }
 
+from transformers import Trainer
+import torch.nn as nn
+
+class WeightedTrainer(Trainer):
+    def compute_loss(self, model, inputs, return_outputs=False):
+        labels = inputs.get("labels")
+
+        outputs = model(**inputs)
+        logits = outputs.get("logits")
+
+        loss_fct = nn.CrossEntropyLoss(weight=class_weights)
+        loss = loss_fct(logits, labels)
+
+        return (loss, outputs) if return_outputs else loss
+
 args = TrainingArguments(
     output_dir=str(OUT_DIR),
     eval_strategy="epoch",
@@ -91,7 +109,7 @@ args = TrainingArguments(
     report_to="none"
 )
 
-trainer = Trainer(
+trainer = WeightedTrainer(
     model=model,
     args=args,
     train_dataset=train_ds,

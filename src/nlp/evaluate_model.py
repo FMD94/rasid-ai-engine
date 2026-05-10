@@ -13,6 +13,8 @@ lang_correct = Counter()
 label_total = Counter()
 label_correct = Counter()
 
+wrong_predictions = []
+
 print("\n--- EVALUATION START ---\n")
 
 for _, row in df.iterrows():
@@ -21,8 +23,14 @@ for _, row in df.iterrows():
     lang = row["language"]
 
     result = analyze_text_auto(text)
-    pred = result.get("decision")
 
+    if result is None:
+        result = {
+            "decision": "error",
+            "reasons": ["analyze_text_auto returned None"]
+        }
+
+    pred = result.get("decision")
     is_correct = pred == true_label
 
     lang_total[lang] += 1
@@ -32,6 +40,14 @@ for _, row in df.iterrows():
         correct += 1
         lang_correct[lang] += 1
         label_correct[true_label] += 1
+    else:
+        wrong_predictions.append({
+            "text": text,
+            "lang": lang,
+            "true": true_label,
+            "pred": pred,
+            "reasons": result.get("reasons", [])
+        })
 
     print(f"TEXT: {text}")
     print(f"LANG: {lang} | TRUE: {true_label} | PRED: {pred} | {'✔' if is_correct else '❌'}")
@@ -52,3 +68,12 @@ for label in ["approved", "flagged", "blocked"]:
     if label_total[label] > 0:
         acc = label_correct[label] / label_total[label]
         print(f"{label}: {acc:.2f} ({label_correct[label]}/{label_total[label]})")
+
+print("\n--- WRONG PREDICTIONS ONLY ---\n")
+
+for item in wrong_predictions:
+    print(f"TEXT: {item['text']}")
+    print(f"LANG: {item['lang']}")
+    print(f"TRUE: {item['true']} | PRED: {item['pred']}")
+    print(f"REASONS: {item['reasons']}")
+    print("-" * 60)

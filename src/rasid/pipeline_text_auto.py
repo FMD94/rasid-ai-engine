@@ -1,6 +1,8 @@
 from src.rasid.language_router import detect_language
 from src.rasid.pipeline_ar_text_transformer import analyze_ar_text_transformer
 from src.rasid.pipeline_en_text_transformer import analyze_en_text_transformer
+from src.rasid.lime_explainer import explain_with_lime
+
 
 EN_FLAGGED_PHRASES = [
     "sign up now",
@@ -11,10 +13,23 @@ EN_FLAGGED_PHRASES = [
     "limited time offer",
     "exclusive access",
     "start today",
-    "unlock",
-    "act now",
     "register now",
-    "discover our services"
+    "discover our services",
+    "check out",
+    "latest deals",
+    "sign up today",
+    "discover our new services",
+    "take advantage",
+    "offer before it ends",
+    "selected customers",
+    "reported noticeable improvements",
+    "join now",
+    "limited offer",
+    "try this method",
+    "could see better results",
+    "may help",
+    "claims to improve",
+    "potential opportunities",
 ]
 
 AR_FLAGGED_PHRASES = [
@@ -27,7 +42,22 @@ AR_FLAGGED_PHRASES = [
     "عرض اليوم",
     "سارع الآن",
     "احجز الآن",
-    "تعرف على خدماتنا"
+    "تعرف على خدماتنا",
+    "قد يساعد",
+    "يدعي",
+    "فرصًا محتملة",
+    "عرض لفترة محدودة",
+    "قد ينتهي قريبًا",
+    "نتائج أفضل",
+    "بعض البرامج تعد",
+    "سجل اليوم",
+    "لا تضيع الفرصة",
+    "اكتشف خدماتنا",
+    "استفد من العرض",
+    "قبل انتهائه",
+    "ابدأ رحلتك",
+    "جرب الآن",
+    "النتائج تختلف",
 ]
 
 EN_BLOCKED_PHRASES = [
@@ -37,7 +67,24 @@ EN_BLOCKED_PHRASES = [
     "miracle cure",
     "guaranteed results",
     "earn money instantly",
-    "make thousands daily"
+    "make thousands daily",
+    "no risk",
+    "without risk",
+    "double your money",
+    "passive income",
+    "secret investment",
+    "cures diabetes instantly",
+    "cures all diseases",
+    "guaranteed system",
+    "double your crypto",
+    "crypto investment",
+    "no losses",
+    "absolutely no losses",
+    "fixed income",
+    "millionaires only",
+    "cure for every health condition",
+    "within just a few hours",
+    "guaranteed daily profits",
 ]
 
 AR_BLOCKED_PHRASES = [
@@ -47,7 +94,20 @@ AR_BLOCKED_PHRASES = [
     "علاج نهائي",
     "نتائج مضمونة",
     "اكسب المال بسرعة",
-    "دخل ثابت مضمون"
+    "دخل ثابت مضمون",
+    "ربح يومي ثابت",
+    "بدون أي خسارة",
+    "بدون أي مخاطرة",
+    "اربح يوميًا",
+    "أرباح ضخمة",
+    "خلال ساعات",
+    "منتج طبي سحري",
+    "يقضي على جميع الأمراض",
+    "اربح المال من التداول",
+    "بدون خبرة أو مخاطرة",
+    "دخل ثابت",
+    "بسرعة وسهولة",
+    "نتائج مؤكدة",
 ]
 
 
@@ -61,7 +121,6 @@ def apply_rule_boost(text: str, result: dict, lang: str) -> dict:
         blocked_phrases = AR_BLOCKED_PHRASES
         flagged_phrases = AR_FLAGGED_PHRASES
 
-    # Strong blocked override
     for phrase in blocked_phrases:
         if phrase in text_lower:
             result["decision"] = "blocked"
@@ -69,15 +128,27 @@ def apply_rule_boost(text: str, result: dict, lang: str) -> dict:
             result["rule_override"] = True
             return result
 
-    # Soft flagged override
     for phrase in flagged_phrases:
-        if phrase in text_lower and result.get("decision") == "approved":
+        if phrase in text_lower:
             result["decision"] = "flagged"
             result["reasons"] = [f"Rule matched flagged phrase: {phrase}"] + result.get("reasons", [])
             result["rule_override"] = True
             return result
 
     result["rule_override"] = False
+    return result
+
+
+def add_lime_explanation(text: str, result: dict, lang: str) -> dict:
+    try:
+        result["lime_explanation"] = explain_with_lime(
+            text=text,
+            lang=lang,
+            target_label=result["decision"]
+        )
+    except Exception as e:
+        result["lime_explanation"] = [{"error": str(e)}]
+
     return result
 
 
@@ -89,6 +160,7 @@ def analyze_text_auto(text: str) -> dict:
         result["language"] = "ar"
         result["routing_mode"] = "direct_ar_transformer"
         result = apply_rule_boost(text, result, "ar")
+        result = add_lime_explanation(text, result, "ar")
         return result
 
     if lang == "en":
@@ -96,6 +168,7 @@ def analyze_text_auto(text: str) -> dict:
         result["language"] = "en"
         result["routing_mode"] = "direct_en_transformer"
         result = apply_rule_boost(text, result, "en")
+        result = add_lime_explanation(text, result, "en")
         return result
 
     ar_result = analyze_ar_text_transformer(text)
@@ -112,6 +185,7 @@ def analyze_text_auto(text: str) -> dict:
             "en_confidence": en_conf
         }
         ar_result = apply_rule_boost(text, ar_result, "ar")
+        ar_result = add_lime_explanation(text, ar_result, "ar")
         return ar_result
 
     en_result["language"] = "en"
@@ -121,4 +195,5 @@ def analyze_text_auto(text: str) -> dict:
         "en_confidence": en_conf
     }
     en_result = apply_rule_boost(text, en_result, "en")
+    en_result = add_lime_explanation(text, en_result, "en")
     return en_result
