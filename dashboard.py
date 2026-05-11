@@ -1,10 +1,13 @@
 import streamlit as st
 import pandas as pd
 import json
+import sqlite3
+import json
+from pathlib import Path
 from pathlib import Path
 from datetime import datetime
 from src.rasid.database import load_analysis_df, load_reviews_df, save_review_to_db
-
+DB_PATH = Path("logs/rasid.db")
 LOG_FILE = Path("logs/analysis_log.jsonl")
 REVIEW_FILE = Path("logs/moderator_reviews.jsonl")
 
@@ -332,11 +335,27 @@ if df.empty:
 df["decision_label"] = df["decision"].map(label_map).fillna(df["decision"])
 df["confidence"] = pd.to_numeric(df["confidence"], errors="coerce").fillna(0)
 
+def load_disputes():
+    conn = sqlite3.connect(DB_PATH)
+
+    query = """
+    SELECT *
+    FROM dispute_requests
+    ORDER BY id DESC
+    """
+
+    df = pd.read_sql_query(query, conn)
+
+    conn.close()
+
+    return df
+
 tab1, tab2, tab3, tab4 = st.tabs([
     "📊 Overview",
     "👤 Moderator Review",
     "🌍 Region Policy Check",
     "🗂 Logs"
+    "Dispute Requests"
 ])
 
 
@@ -561,3 +580,84 @@ with tab4:
         st.info("No moderator reviews saved yet.")
     else:
         st.dataframe(reviews_df.tail(30), use_container_width=True)
+
+with tab4:
+
+    st.markdown("## User Dispute Requests")
+
+    disputes_df = load_disputes()
+
+    if disputes_df.empty:
+        st.info("No dispute requests found.")
+
+    else:
+
+        for idx, row in disputes_df.iterrows():
+
+            st.markdown("---")
+
+            decision = row["ai_decision"]
+
+            display_decision = {
+                "approved": "Safe",
+                "flagged": "Manipulative",
+                "blocked": "Fraud"
+            }.get(decision, decision)
+
+            st.markdown(f"### Submission #{row['id']}")
+
+            st.write("**Status:**", row["status"])
+            st.write("**AI Decision:**", display_decision)
+            st.write("**Confidence:**", row["confidence"])
+            st.write("**Language:**", row["language"])
+
+            st.write("### Advertisement Text")
+            st.code(row["ad_text"])
+
+            st.write("### AI Reasons")
+
+            try:
+                reasons = json.loads(row["reasons"])
+                for reason in reasons:
+                    st.write(f"• {reason}")
+            except:
+                st.write(row["reasons"])
+
+            st.write("### User Appeal")
+            st.write(row["user_note"])
+
+            moderator_action = st.selectbox(
+                f"Moderator Action #{row['id']}",
+                [
+                    "Keep AI Decision",
+                    "Override to Safe",
+                    "Override to Manipulative",
+                    "Override to Fraud"
+                ],
+                key=f"mod_action_{row['id']}"
+            )
+
+            moderator_note = st.text_area(
+                "Moderator Note",
+                key=f"mod_note_{row['id']}"
+            )
+
+            if st.button(
+                f"Resolve Request #{row['id']}",
+                key=f"resolve_{row['id']}"
+            ):
+
+                conn = sqlite3.connect(DB_PATH)
+                cursor = conn.cursor()
+
+                cursor.execute("""
+                UPDATE dispute_requests
+                SET status = ?
+                WHERE id = ?
+                """, ("Resolved", row["id"]))
+
+                conn.commit()
+                conn.close()
+
+                st.success("Request resolved successfully.")
+                st.rerun()

@@ -126,3 +126,20 @@ def load_reviews_df():
 
     conn.close()
     return df
+DB_PATH = Path("logs/rasid.db")
+
+
+def load_disputes():
+    conn = sqlite3.connect(DB_PATH)
+
+    query = """
+    SELECT *
+    FROM dispute_requests
+    ORDER BY id DESC
+    """
+
+    df = pd.read_sql_query(query, conn)
+
+    conn.close()
+
+    return df
