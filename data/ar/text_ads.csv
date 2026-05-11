@@ -103,51 +103,63 @@ id,text,label,language,category,source,is_synthetic,notes
 108,"انضم إلى آلاف المستخدمين اليوم",flagged,ar,general,manual,no,"social proof"
 109,"ابدأ تجربتك معنا الآن",flagged,ar,general,manual,no,"soft persuasion"
 110,"استكشف خدماتنا وابدأ الآن",flagged,ar,general,manual,no,"call to action"
-111,اربح 5000 ريال يوميًا بدون أي مجهود، سجل الآن,blocked
-112,استثمار مضمون 100٪ بدون خسارة، فرصة لا تعوض,blocked
-113,هذا العلاج السحري يشفي جميع الأمراض خلال أيام,blocked
-114,احصل على دخل ثابت يومي من هاتفك فقط,blocked
-115,ضاعف أموالك خلال 24 ساعة بطريقة مضمونة,blocked
-116,منتج معجزة لإنقاص الوزن خلال 3 أيام فقط,blocked
-117,اكسب المال فورًا بدون خبرة أو رأس مال,blocked
-118,فرصة استثمارية سرية تحقق أرباح هائلة,blocked
-119,علاج نهائي لجميع المشاكل الصحية بدون طبيب,blocked
-120,اربح آلاف الريالات يوميًا بسهولة تامة,blocked
-121,نظام تداول يضمن لك الربح دائمًا,blocked
-122,استثمر الآن وحقق أرباحًا خيالية خلال ساعات,blocked
-123,يمكن أن يساعد تناول الطعام الصحي في تحسين نمط الحياة,approved
-124,ممارسة الرياضة بانتظام تعزز الصحة العامة,approved
-125,تعرف على أحدث الأخبار في مجال التكنولوجيا,approved
-126,نصائح لتنظيم الوقت وزيادة الإنتاجية اليومية,approved
-127,دليل شامل لتعلم البرمجة للمبتدئين,approved
-128,أفضل طرق للحفاظ على نظام غذائي متوازن,approved
-129,مقال يشرح أساسيات الذكاء الاصطناعي,approved
-130,أخبار اقتصادية حول الأسواق العالمية,approved
-131,تعلم مهارات جديدة لتطوير حياتك المهنية,approved
-132,مراجعة لهاتف جديد في السوق,approved
-133,قد يساعد هذا المنتج في خسارة الوزن بسرعة,flagged
-134,نتائج مذهلة خلال أسبوع حسب تجربة المستخدمين,flagged
-135,يُعتقد أن هذا النظام يحقق أرباحًا جيدة,flagged
-136,بعض الأشخاص حققوا نجاحًا كبيرًا باستخدام هذه الطريقة,flagged
-137,ربما يساعد هذا المنتج في تحسين صحتك,flagged
-138,عرض لفترة محدودة قد يفوتك,flagged
-139,يقال أن هذا التطبيق يزيد من إنتاجيتك,flagged
-140,جرب الآن لتحصل على نتائج أفضل,flagged
-144,جرب هذه الطريقة وقد تلاحظ نتائج أفضل,flagged,ar
-145,عرض محدود لفئة معينة من المستخدمين,flagged,ar
-146,هذا النظام قد يساعد في زيادة الإنتاجية,flagged,ar
-147,أفاد بعض المستخدمين بنجاح متوسط باستخدام هذه المنصة,flagged,ar
-148,يدعي هذا التطبيق تحسين الأداء اليومي,flagged,ar
-149,يُعتقد أن هذه الطريقة قد تعزز النتائج,flagged,ar
-150,تشير بعض التجارب إلى فعالية هذا المنتج,flagged,ar
-154,أبلغ المستخدمون عن تغييرات ملحوظة مع الوقت,flagged,ar
-156,سارع الآن قبل انتهاء العرض,flagged,ar
-157,عرض حصري لفترة محدودة فقط,flagged,ar
-158,لا تفوت هذه الفرصة المميزة اليوم,flagged,ar
-159,عدد الأماكن محدود، سجل الآن,flagged,ar
-160,ينتهي العرض خلال 24 ساعة فقط,flagged,ar
-161,انضم لآلاف المستخدمين الذين استفادوا بالفعل,flagged,ar
-162,هذه فرصتك لتحقيق نتائج أفضل,flagged,ar
-163,ابدأ الآن واستفد من العرض الخاص,flagged,ar
-164,لا تضيع هذه الفرصة الذهبية,flagged,ar
-165,جرب الآن وشاهد الفرق بنفسك,flagged,ar
+111,"اربح 5000 ريال يوميًا بدون أي مجهود سجل الآن",blocked,ar,finance,manual,no,"unrealistic income claim"
+112,"استثمار مضمون 100٪ بدون خسارة فرصة لا تعوض",blocked,ar,finance,manual,no,"false guarantee"
+113,"هذا العلاج السحري يشفي جميع الأمراض خلال أيام",blocked,ar,health,manual,no,"false medical cure"
+114,"احصل على دخل ثابت يومي من هاتفك فقط",blocked,ar,finance,manual,no,"unrealistic income promise"
+115,"ضاعف أموالك خلال 24 ساعة بطريقة مضمونة",blocked,ar,finance,manual,no,"financial scam pattern"
+116,"منتج معجزة لإنقاص الوزن خلال 3 أيام فقط",blocked,ar,health,manual,no,"unsafe weight loss claim"
+117,"اكسب المال فورًا بدون خبرة أو رأس مال",blocked,ar,finance,manual,no,"fast income scam"
+118,"فرصة استثمارية سرية تحقق أرباح هائلة",blocked,ar,finance,manual,no,"misleading investment"
+119,"علاج نهائي لجميع المشاكل الصحية بدون طبيب",blocked,ar,health,manual,no,"false medical guarantee"
+120,"اربح آلاف الريالات يوميًا بسهولة تامة",blocked,ar,finance,manual,no,"unrealistic financial promise"
+121,"نظام تداول يضمن لك الربح دائمًا",blocked,ar,finance,manual,no,"guaranteed trading claim"
+122,"استثمر الآن وحقق أرباحًا خيالية خلال ساعات",blocked,ar,finance,manual,no,"scam financial language"
+123,"يمكن أن يساعد تناول الطعام الصحي في تحسين نمط الحياة",approved,ar,health,manual,no,"neutral health advice"
+124,"ممارسة الرياضة بانتظام تعزز الصحة العامة",approved,ar,health,manual,no,"general health information"
+125,"تعرف على أحدث الأخبار في مجال التكنولوجيا",approved,ar,technology,manual,no,"neutral technology article"
+126,"نصائح لتنظيم الوقت وزيادة الإنتاجية اليومية",approved,ar,education,manual,no,"neutral advice"
+127,"دليل شامل لتعلم البرمجة للمبتدئين",approved,ar,education,manual,no,"educational content"
+128,"أفضل طرق للحفاظ على نظام غذائي متوازن",approved,ar,health,manual,no,"general lifestyle guidance"
+129,"مقال يشرح أساسيات الذكاء الاصطناعي",approved,ar,technology,manual,no,"educational article"
+130,"أخبار اقتصادية حول الأسواق العالمية",approved,ar,finance,manual,no,"neutral financial reporting"
+131,"تعلم مهارات جديدة لتطوير حياتك المهنية",approved,ar,education,manual,no,"career development"
+132,"مراجعة لهاتف جديد في السوق",approved,ar,technology,manual,no,"neutral product review"
+133,"قد يساعد هذا المنتج في خسارة الوزن بسرعة",flagged,ar,health,manual,no,"soft health claim"
+134,"نتائج مذهلة خلال أسبوع حسب تجربة المستخدمين",flagged,ar,health,manual,no,"social proof claim"
+135,"يُعتقد أن هذا النظام يحقق أرباحًا جيدة",flagged,ar,finance,manual,no,"uncertain financial promise"
+136,"بعض الأشخاص حققوا نجاحًا كبيرًا باستخدام هذه الطريقة",flagged,ar,general,manual,no,"social proof manipulation"
+137,"ربما يساعد هذا المنتج في تحسين صحتك",flagged,ar,health,manual,no,"vague health claim"
+138,"عرض لفترة محدودة قد يفوتك",flagged,ar,retail,manual,no,"FOMO and urgency"
+139,"يقال أن هذا التطبيق يزيد من إنتاجيتك",flagged,ar,technology,manual,no,"unsupported app claim"
+140,"جرب الآن لتحصل على نتائج أفضل",flagged,ar,general,manual,no,"call to action"
+141,"قد تلاحظ تحسنًا ملحوظًا خلال فترة قصيرة",flagged,ar,general,manual,no,"fast-results suggestion"
+142,"العديد من المستخدمين ينصحون بهذه الطريقة",flagged,ar,general,manual,no,"social proof persuasion"
+143,"فرصة محدودة للراغبين في التسجيل",flagged,ar,education,manual,no,"scarcity tactic"
+144,"جرب هذه الطريقة وقد تلاحظ نتائج أفضل",flagged,ar,general,manual,no,"soft persuasive language"
+145,"عرض محدود لفئة معينة من المستخدمين",flagged,ar,retail,manual,no,"exclusive offer pressure"
+186,"يوفر التطبيق أدوات متعددة لإدارة المهام اليومية",approved,ar,technology,manual,no,"neutral app description"
+187,"تتناول المقالة أحدث التطورات في قطاع التعليم",approved,ar,education,manual,no,"neutral article"
+188,"تم الإعلان عن تحديثات جديدة للخدمة",approved,ar,general,manual,no,"neutral announcement"
+189,"يوفر المتجر خيارات متنوعة للدفع الإلكتروني",approved,ar,retail,manual,no,"normal service information"
+190,"ناقش الخبر تأثير التغيرات الاقتصادية الأخيرة",approved,ar,finance,manual,no,"neutral financial reporting"
+191,"تعرض المنصة محتوى تعليميًا للمستخدمين",approved,ar,education,manual,no,"educational platform"
+192,"تشرح الدورة أساسيات تطوير التطبيقات",approved,ar,education,manual,no,"neutral educational content"
+193,"تقدم الشركة خدمات تقنية لعدة قطاعات",approved,ar,technology,manual,no,"neutral company information"
+194,"توضح الدراسة نتائج البحث الأخير",approved,ar,general,manual,no,"neutral research article"
+195,"تم افتتاح الفرع الجديد في المنطقة الشمالية",approved,ar,retail,manual,no,"neutral business news"
+196,"حقق أرباحًا يومية مضمونة بدون أي مخاطرة",blocked,ar,finance,manual,no,"false financial guarantee"
+197,"علاج سحري يقضي على جميع الأمراض فورًا",blocked,ar,health,manual,no,"false medical cure"
+198,"ضاعف دخلك خلال ساعات بدون خبرة",blocked,ar,finance,manual,no,"unrealistic income promise"
+199,"نتائج مضمونة 100٪ خلال يوم واحد",blocked,ar,general,manual,no,"absolute guarantee claim"
+200,"اكسب المال من المنزل بسهولة تامة",blocked,ar,finance,manual,no,"scam-like earning claim"
+201,"هذا المنتج يشفي جميع الحالات الصحية",blocked,ar,health,manual,no,"false medical claim"
+202,"استثمر الآن بأرباح مضمونة يوميًا",blocked,ar,finance,manual,no,"misleading investment promise"
+203,"حقق ثروة سريعة من هاتفك فقط",blocked,ar,finance,manual,no,"get-rich-quick scam"
+204,"نتائج فورية بدون أي مجهود",blocked,ar,general,manual,no,"unrealistic instant result"
+205,"طريقة سرية تضمن لك الربح دائمًا",blocked,ar,finance,manual,no,"deceptive financial language"
+206,"خسارة الوزن مضمونة خلال يومين فقط",blocked,ar,health,manual,no,"unsafe weight loss claim"
+207,"اكسب آلاف الريالات أسبوعيًا بدون عمل",blocked,ar,finance,manual,no,"unrealistic income promise"
+208,"استثمار آمن يحقق أرباحًا خيالية",blocked,ar,finance,manual,no,"false investment claim"
+209,"هذا العلاج يعمل فورًا لجميع المستخدمين",blocked,ar,health,manual,no,"absolute medical promise"
+210,"احصل على دخل ثابت مضمون من الإنترنت",blocked,ar,finance,manual,no,"scam financial promise"

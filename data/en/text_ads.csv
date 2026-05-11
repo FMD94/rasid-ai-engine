@@ -106,51 +106,113 @@ id,text,label,language,category,source,is_synthetic,notes
 103,"Get guaranteed weight loss in just days",blocked,en,health,manual,no,"false health claim"
 104,"This remedy works instantly for everyone",blocked,en,health,manual,no,"absolute false promise"
 105,"Make fast profits every day with no experience",blocked,en,finance,manual,no,"scam-like earning claim"
-106,This article explains recent developments in global politics,approved
-107,Learn how to improve your productivity with simple habits,approved
-108,This product review highlights both pros and cons,approved
-109,A balanced diet can contribute to overall health,approved
-110,Technology trends continue to evolve rapidly worldwide,approved
-111,This course helps beginners understand programming basics,approved
-112,Experts discuss economic changes in recent markets,approved
-113,Tips for maintaining a healthy lifestyle daily,approved
-114,A guide to understanding machine learning concepts,approved
-115,News coverage of recent international events,approved
-116,An overview of modern business strategies,approved
-117,This platform offers various educational resources,approved
-118,A neutral analysis of current industry trends,approved
-119,Insights into improving work-life balance,approved
-120,An article about sustainable environmental practices,approved
-121,Make $1000 per day with zero effort guaranteed,blocked
-122,This miracle pill cures all diseases instantly,blocked
-123,Earn money instantly without any experience,blocked
-124,Guaranteed profit investment with no risk,blocked
-125,Lose 10 kg in 2 days with this secret method,blocked
-126,This hidden trick will make you rich overnight,blocked
-127,100% guaranteed success system revealed now,blocked
-128,Instant income from home with no skills needed,blocked
-129,Double your money in just 24 hours,blocked
-130,Secret investment strategy banks don’t want you to know,blocked
-132,Some users reported impressive results,flagged
-134,This system could improve your financial situation,flagged
-135,Try now and see noticeable changes,flagged
-138,Results may vary but many saw improvements,flagged,en
-140,Limited offer available for selected customers,flagged,en
-141,This system could increase your productivity,flagged,en
-142,Users reported moderate success using this platform,flagged,en
-143,This app claims to enhance your daily performance,flagged,en
-144,It is believed this method can boost results,flagged,en
-145,Some evidence suggests this product is effective,flagged,en
-146,Early adopters noticed improvements after using this tool,flagged,en
-149,Users experienced noticeable changes over time,flagged,en
-150,This strategy could improve your financial situation,flagged,en
-151,Act now before this offer disappears,flagged,en
-152,Limited time deal only for selected users,flagged,en
-153,Don’t miss this exclusive opportunity today,flagged,en
-154,Only a few spots left, register now,flagged,en
-155,This offer expires in the next 24 hours,flagged,en
-156,Join thousands who are already benefiting from this,flagged,en
-157,You don’t want to miss this chance,flagged,en
-158,Take advantage of this special promotion today,flagged,en
-159,Start now and see quick improvements,flagged,en
-160,This is your chance to improve your results fast,flagged,en
+106,"This article explains recent developments in global politics",approved,en,general,manual,no,"neutral news"
+107,"Learn how to improve your productivity with simple habits",approved,en,education,manual,no,"neutral advice"
+108,"This product review highlights both pros and cons",approved,en,retail,manual,no,"balanced review"
+109,"A balanced diet can contribute to overall health",approved,en,health,manual,no,"general health information"
+110,"Technology trends continue to evolve rapidly worldwide",approved,en,technology,manual,no,"neutral technology news"
+111,"This course helps beginners understand programming basics",approved,en,education,manual,no,"educational information"
+112,"Experts discuss economic changes in recent markets",approved,en,finance,manual,no,"neutral economic analysis"
+113,"Tips for maintaining a healthy lifestyle daily",approved,en,health,manual,no,"general lifestyle advice"
+114,"A guide to understanding machine learning concepts",approved,en,technology,manual,no,"educational content"
+115,"News coverage of recent international events",approved,en,general,manual,no,"neutral news"
+116,"An overview of modern business strategies",approved,en,business,manual,no,"neutral business article"
+117,"This platform offers various educational resources",approved,en,education,manual,no,"neutral platform description"
+118,"A neutral analysis of current industry trends",approved,en,general,manual,no,"neutral analysis"
+119,"Insights into improving work-life balance",approved,en,general,manual,no,"neutral advice"
+120,"An article about sustainable environmental practices",approved,en,general,manual,no,"neutral article"
+121,"Make $1000 per day with zero effort guaranteed",blocked,en,finance,manual,no,"unrealistic guaranteed income"
+122,"This miracle pill cures all diseases instantly",blocked,en,health,manual,no,"false medical cure claim"
+123,"Earn money instantly without any experience",blocked,en,finance,manual,no,"unrealistic income claim"
+124,"Guaranteed profit investment with no risk",blocked,en,finance,manual,no,"false investment guarantee"
+125,"Lose 10 kg in 2 days with this secret method",blocked,en,health,manual,no,"unsafe weight loss claim"
+126,"This hidden trick will make you rich overnight",blocked,en,finance,manual,no,"get-rich-quick claim"
+127,"100% guaranteed success system revealed now",blocked,en,general,manual,no,"absolute guarantee"
+128,"Instant income from home with no skills needed",blocked,en,finance,manual,no,"unrealistic income claim"
+129,"Double your money in just 24 hours",blocked,en,finance,manual,no,"financial scam pattern"
+130,"Secret investment strategy banks don’t want you to know",blocked,en,finance,manual,no,"conspiracy-style investment claim"
+131,"This product may help you lose weight faster",flagged,en,health,manual,no,"soft health claim"
+132,"Some users reported impressive results",flagged,en,general,manual,no,"social proof claim"
+133,"Limited-time offer you might not want to miss",flagged,en,retail,manual,no,"urgency and FOMO"
+134,"This system could improve your financial situation",flagged,en,finance,manual,no,"ambiguous financial promise"
+135,"Try now and see noticeable changes",flagged,en,general,manual,no,"persuasive call to action"
+136,"This product may help improve your health over time",flagged,en,health,manual,no,"ambiguous health claim"
+137,"Some users claim this method works effectively",flagged,en,general,manual,no,"unsupported user claim"
+138,"Results may vary but many saw improvements",flagged,en,general,manual,no,"vague outcome claim"
+139,"Try this approach and you might see better outcomes",flagged,en,general,manual,no,"soft persuasion"
+140,"Limited offer available for selected customers",flagged,en,retail,manual,no,"scarcity and exclusivity"
+141,"This system could increase your productivity",flagged,en,technology,manual,no,"uncertain benefit claim"
+142,"Users reported moderate success using this platform",flagged,en,general,manual,no,"social proof claim"
+143,"This app claims to enhance your daily performance",flagged,en,technology,manual,no,"app performance claim"
+144,"It is believed this method can boost results",flagged,en,general,manual,no,"unsupported vague claim"
+145,"Some evidence suggests this product is effective",flagged,en,general,manual,no,"weak evidence claim"
+146,"Early adopters noticed improvements after using this tool",flagged,en,technology,manual,no,"social proof claim"
+147,"You may benefit from trying this solution",flagged,en,general,manual,no,"soft persuasive claim"
+148,"This opportunity might help you grow your income",flagged,en,finance,manual,no,"ambiguous income claim"
+149,"Users experienced noticeable changes over time",flagged,en,general,manual,no,"vague user outcome"
+150,"This strategy could improve your financial situation",flagged,en,finance,manual,no,"uncertain financial benefit"
+151,"Act now before this offer disappears",flagged,en,retail,manual,no,"urgency pressure"
+152,"Limited time deal only for selected users",flagged,en,retail,manual,no,"scarcity pressure"
+153,"Don’t miss this exclusive opportunity today",flagged,en,general,manual,no,"FOMO and exclusivity"
+154,"Only a few spots left, register now",flagged,en,education,manual,no,"scarcity and urgency"
+155,"This offer expires in the next 24 hours",flagged,en,retail,manual,no,"time pressure"
+156,"Join thousands who are already benefiting from this",flagged,en,general,manual,no,"social proof persuasion"
+157,"You don’t want to miss this chance",flagged,en,general,manual,no,"FOMO pressure"
+158,"Take advantage of this special promotion today",flagged,en,retail,manual,no,"promotional pressure"
+159,"Start now and see quick improvements",flagged,en,general,manual,no,"fast-results persuasion"
+160,"This is your chance to improve your results fast",flagged,en,general,manual,no,"urgency and fast-results claim"
+161,"Discover our latest collection today",approved,en,retail,manual,no,"normal product promotion"
+162,"Fast delivery available across all regions",approved,en,retail,manual,no,"normal service information"
+163,"Visit our website for more information",approved,en,general,manual,no,"neutral call to information"
+164,"Seasonal discounts available on selected items",approved,en,retail,manual,no,"normal discount information"
+165,"Multiple payment methods supported",approved,en,retail,manual,no,"normal service information"
+166,"Original products with quality guarantee",approved,en,retail,manual,no,"normal product assurance"
+167,"Check our new arrivals online",approved,en,retail,manual,no,"normal shopping information"
+168,"Limited-time opportunity available today only",flagged,en,retail,manual,no,"urgency and scarcity"
+169,"Many users reported impressive improvements",flagged,en,general,manual,no,"social proof claim"
+170,"This product may help you achieve fast results",flagged,en,general,manual,no,"fast-results persuasion"
+171,"Act now before the special offer expires",flagged,en,retail,manual,no,"urgency pressure"
+172,"Exclusive access for selected customers only",flagged,en,general,manual,no,"exclusivity pressure"
+173,"You could notice visible changes quickly",flagged,en,beauty,manual,no,"appearance-based result claim"
+174,"Influencers are talking about this new method",flagged,en,general,manual,no,"influencer social proof"
+175,"Earn thousands daily with zero risk",blocked,en,finance,manual,no,"false financial promise"
+176,"Guaranteed instant cure for all diseases",blocked,en,health,manual,no,"false medical cure claim"
+177,"Double your money within hours",blocked,en,finance,manual,no,"financial scam pattern"
+178,"100 percent guaranteed profits from trading",blocked,en,finance,manual,no,"false trading guarantee"
+179,"Instant results with no effort required",blocked,en,general,manual,no,"unrealistic result claim"
+180,"Make money fast without any experience",blocked,en,finance,manual,no,"unrealistic income claim"
+181,"The application provides tools for organizing daily tasks",approved,en,technology,manual,no,"neutral app description"
+182,"The article discusses recent developments in education",approved,en,education,manual,no,"neutral article"
+183,"The company announced updates to its services",approved,en,general,manual,no,"neutral announcement"
+184,"Multiple delivery options are available for customers",approved,en,retail,manual,no,"normal service information"
+185,"The report examined recent economic changes",approved,en,finance,manual,no,"neutral financial reporting"
+186,"The platform provides educational resources for users",approved,en,education,manual,no,"educational content"
+187,"This course explains programming fundamentals",approved,en,education,manual,no,"neutral learning content"
+188,"The organization offers technical services for businesses",approved,en,technology,manual,no,"neutral company information"
+189,"The study presented findings from recent research",approved,en,general,manual,no,"neutral research article"
+190,"The new branch was opened in the northern region",approved,en,retail,manual,no,"neutral business news"
+191,"The update improves overall system performance",approved,en,technology,manual,no,"neutral technology update"
+192,"The article reviews current market conditions",approved,en,finance,manual,no,"neutral market analysis"
+193,"The event included several educational workshops",approved,en,education,manual,no,"neutral event information"
+194,"The company launched a new customer support service",approved,en,general,manual,no,"neutral service announcement"
+195,"Users can access additional learning materials online",approved,en,education,manual,no,"neutral educational information"
+196,"Guaranteed daily income with absolutely no risk",blocked,en,finance,manual,no,"false financial guarantee"
+197,"Miracle treatment that cures every disease instantly",blocked,en,health,manual,no,"false medical cure"
+198,"Double your earnings within hours without experience",blocked,en,finance,manual,no,"unrealistic income promise"
+199,"100 percent guaranteed results in just one day",blocked,en,general,manual,no,"absolute guarantee claim"
+200,"Earn money easily from home with no work required",blocked,en,finance,manual,no,"scam-like earning claim"
+201,"This product cures all medical conditions immediately",blocked,en,health,manual,no,"false medical promise"
+202,"Invest today for guaranteed profits every day",blocked,en,finance,manual,no,"misleading investment promise"
+203,"Build instant wealth using only your phone",blocked,en,finance,manual,no,"get-rich-quick scam"
+204,"Instant success with no effort needed",blocked,en,general,manual,no,"unrealistic instant result"
+205,"Secret strategy that guarantees financial success",blocked,en,finance,manual,no,"deceptive financial language"
+206,"Lose weight permanently in only two days",blocked,en,health,manual,no,"unsafe weight loss claim"
+207,"Earn thousands weekly without doing any work",blocked,en,finance,manual,no,"unrealistic income promise"
+208,"Safe investment with massive guaranteed returns",blocked,en,finance,manual,no,"false investment claim"
+209,"This remedy works instantly for every user",blocked,en,health,manual,no,"absolute medical guarantee"
+210,"Receive fixed online income every single day",blocked,en,finance,manual,no,"financial scam language"
+211,"Guaranteed trading profits with zero losses",blocked,en,finance,manual,no,"false trading guarantee"
+212,"Instant cure for chronic diseases revealed now",blocked,en,health,manual,no,"dangerous medical misinformation"
+213,"Become rich overnight using this hidden system",blocked,en,finance,manual,no,"get-rich-quick scam"
+214,"No-risk investment opportunity with guaranteed success",blocked,en,finance,manual,no,"false no-risk claim"
+215,"Permanent fat loss in three days guaranteed",blocked,en,health,manual,no,"unsafe health claim"

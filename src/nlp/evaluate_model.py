@@ -2,7 +2,14 @@ import pandas as pd
 from collections import Counter
 from src.rasid.pipeline_text_auto import analyze_text_auto
 
-df = pd.read_csv("data/eval/eval_dataset.csv")
+df = pd.read_csv(
+    "data/eval/eval_dataset.csv",
+    quotechar='"',
+    escapechar="\\",
+    on_bad_lines="skip"
+)
+
+df = df[["text", "label", "language"]].dropna()
 
 correct = 0
 total = len(df)

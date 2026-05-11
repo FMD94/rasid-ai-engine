@@ -104,3 +104,10 @@ id,text,label,language
 98,بعض البرامج تعد بدخل سريع لكن النتائج تختلف,flagged,ar
 99,This article reviews different approaches to healthy eating,approved,en
 100,يستعرض هذا المقال طرقًا مختلفة للتغذية الصحية,approved,ar
+101,لا تفوت الفرصة المحدودة اليوم فقط,flagged,ar,retail,synthetic,yes,أسلوب إلحاح وخوف من فوات الفرصة
+102,قد يساعد هذا المنتج في تحسين مظهرك بسرعة,flagged,ar,beauty,synthetic,yes,ادعاء تجميلي غير مؤكد
+103,العديد من المستخدمين لاحظوا نتائج مذهلة,flagged,ar,health,synthetic,yes,استخدام دليل اجتماعي بدون توثيق
+104,سارع قبل انتهاء العرض الخاص,flagged,ar,retail,synthetic,yes,ضغط زمني لاتخاذ القرار
+105,ربما يكون هذا الحل المناسب لك,flagged,ar,general,synthetic,yes,صياغة إقناعية غير حاسمة
+106,عروض حصرية لعدد محدود من العملاء,flagged,ar,retail,synthetic,yes,ندرة مصطنعة وضغط تسويقي
+107,نتائج قد تختلف من شخص لآخر ولكنها فعالة,flagged,ar,health,synthetic,yes,ادعاء نتائج مع إخلاء مسؤولية ضعيف
