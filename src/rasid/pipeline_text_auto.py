@@ -5,109 +5,48 @@ from src.rasid.lime_explainer import explain_with_lime
 
 
 EN_FLAGGED_PHRASES = [
-    "sign up now",
-    "join today",
-    "get started now",
-    "don’t miss",
-    "don't miss",
     "limited time offer",
     "exclusive access",
-    "start today",
+    "act now",
     "register now",
-    "discover our services",
-    "check out",
-    "latest deals",
-    "sign up today",
-    "discover our new services",
-    "take advantage",
-    "offer before it ends",
-    "selected customers",
-    "reported noticeable improvements",
-    "join now",
-    "limited offer",
-    "try this method",
-    "could see better results",
-    "may help",
-    "claims to improve",
-    "potential opportunities",
+    "don't miss",
+    "don’t miss",
+    "offer expires",
+    "only today"
 ]
 
 AR_FLAGGED_PHRASES = [
-    "سجل الآن",
-    "انضم الآن",
-    "ابدأ اليوم",
-    "لا تفوت",
     "لفترة محدودة",
-    "اكتشف الآن",
-    "عرض اليوم",
+    "عرض محدود",
     "سارع الآن",
-    "احجز الآن",
-    "تعرف على خدماتنا",
-    "قد يساعد",
-    "يدعي",
-    "فرصًا محتملة",
-    "عرض لفترة محدودة",
-    "قد ينتهي قريبًا",
-    "نتائج أفضل",
-    "بعض البرامج تعد",
-    "سجل اليوم",
-    "لا تضيع الفرصة",
-    "اكتشف خدماتنا",
-    "استفد من العرض",
-    "قبل انتهائه",
-    "ابدأ رحلتك",
-    "جرب الآن",
-    "النتائج تختلف",
+    "سجل الآن",
+    "لا تفوت",
+    "العرض ينتهي",
+    "اليوم فقط"
 ]
 
 EN_BLOCKED_PHRASES = [
     "guaranteed profit",
     "zero risk",
-    "instant results",
+    "double your money",
     "miracle cure",
     "guaranteed results",
     "earn money instantly",
     "make thousands daily",
-    "no risk",
-    "without risk",
-    "double your money",
-    "passive income",
-    "secret investment",
-    "cures diabetes instantly",
-    "cures all diseases",
-    "guaranteed system",
-    "double your crypto",
-    "crypto investment",
-    "no losses",
-    "absolutely no losses",
-    "fixed income",
-    "millionaires only",
-    "cure for every health condition",
-    "within just a few hours",
-    "guaranteed daily profits",
+    "no risk investment",
+    "instant cure"
 ]
 
 AR_BLOCKED_PHRASES = [
     "أرباح مضمونة",
     "بدون مخاطر",
-    "نتائج فورية",
+    "ضاعف أموالك",
     "علاج نهائي",
     "نتائج مضمونة",
     "اكسب المال بسرعة",
     "دخل ثابت مضمون",
-    "ربح يومي ثابت",
-    "بدون أي خسارة",
-    "بدون أي مخاطرة",
-    "اربح يوميًا",
-    "أرباح ضخمة",
-    "خلال ساعات",
-    "منتج طبي سحري",
-    "يقضي على جميع الأمراض",
-    "اربح المال من التداول",
-    "بدون خبرة أو مخاطرة",
-    "دخل ثابت",
-    "بسرعة وسهولة",
-    "نتائج مؤكدة",
+    "استثمار بدون مخاطر",
+    "علاج فوري"
 ]
 
 
@@ -121,21 +60,90 @@ def apply_rule_boost(text: str, result: dict, lang: str) -> dict:
         blocked_phrases = AR_BLOCKED_PHRASES
         flagged_phrases = AR_FLAGGED_PHRASES
 
+    reasons = result.get("reasons", [])
+    if not isinstance(reasons, list):
+        reasons = [str(reasons)]
+
     for phrase in blocked_phrases:
-        if phrase in text_lower:
+        if phrase.lower() in text_lower:
             result["decision"] = "blocked"
-            result["reasons"] = [f"Rule matched blocked phrase: {phrase}"] + result.get("reasons", [])
+            result["reasons"] = [f"Rule matched blocked phrase: {phrase}"] + reasons
             result["rule_override"] = True
             return result
 
     for phrase in flagged_phrases:
-        if phrase in text_lower:
+        if phrase.lower() in text_lower:
             result["decision"] = "flagged"
-            result["reasons"] = [f"Rule matched flagged phrase: {phrase}"] + result.get("reasons", [])
+            result["reasons"] = [f"Rule matched flagged phrase: {phrase}"] + reasons
             result["rule_override"] = True
             return result
 
+    result["reasons"] = reasons
     result["rule_override"] = False
+    return result
+
+
+def apply_safety_gate(result: dict) -> dict:
+    confidence = float(result.get("confidence", 0))
+    decision = result.get("decision", "approved")
+
+    reasons = result.get("reasons", [])
+    if not isinstance(reasons, list):
+        reasons = [str(reasons)]
+
+    strong_fraud_reason = any(
+        "blocked phrase" in str(reason).lower()
+        or "guaranteed profit" in str(reason).lower()
+        or "zero risk" in str(reason).lower()
+        or "double your money" in str(reason).lower()
+        or "miracle cure" in str(reason).lower()
+        or "أرباح مضمونة" in str(reason)
+        or "بدون مخاطر" in str(reason)
+        or "ضاعف أموالك" in str(reason)
+        or "علاج نهائي" in str(reason)
+        for reason in reasons
+    )
+
+    if decision == "blocked" and confidence < 0.60 and not strong_fraud_reason:
+        result["decision"] = "flagged"
+        reasons.append("Low-confidence fraud prediction was downgraded to manipulative.")
+
+    elif decision == "flagged" and confidence < 0.45:
+        result["decision"] = "approved"
+        reasons.append("Low-confidence manipulative prediction was treated as safe.")
+
+    result["reasons"] = reasons
+    return result
+
+
+def add_user_friendly_explanation(result: dict) -> dict:
+    decision = result.get("decision", "approved")
+    reasons = result.get("reasons", [])
+
+    if not isinstance(reasons, list):
+        reasons = [str(reasons)]
+
+    if decision == "approved":
+        result["explanation"] = (
+            "RASID classified this content as Safe because no strong manipulative, fraudulent, "
+            "or high-risk advertising patterns were detected."
+        )
+
+    elif decision == "flagged":
+        result["explanation"] = (
+            "RASID classified this content as Manipulative because it contains persuasive advertising "
+            "signals such as urgency, exclusivity, pressure language, or promotional wording."
+        )
+
+    elif decision == "blocked":
+        result["explanation"] = (
+            "RASID classified this content as Fraud because it contains high-risk claims such as "
+            "guaranteed profit, zero-risk investment, instant results, or unrealistic promises."
+        )
+
+    else:
+        result["explanation"] = "RASID could not determine a clear safety category for this content."
+
     return result
 
 
@@ -152,6 +160,14 @@ def add_lime_explanation(text: str, result: dict, lang: str) -> dict:
     return result
 
 
+def finalize_result(text: str, result: dict, lang: str) -> dict:
+    result = apply_rule_boost(text, result, lang)
+    result = apply_safety_gate(result)
+    result = add_user_friendly_explanation(result)
+    result = add_lime_explanation(text, result, lang)
+    return result
+
+
 def analyze_text_auto(text: str) -> dict:
     lang = detect_language(text)
 
@@ -159,17 +175,13 @@ def analyze_text_auto(text: str) -> dict:
         result = analyze_ar_text_transformer(text)
         result["language"] = "ar"
         result["routing_mode"] = "direct_ar_transformer"
-        result = apply_rule_boost(text, result, "ar")
-        result = add_lime_explanation(text, result, "ar")
-        return result
+        return finalize_result(text, result, "ar")
 
     if lang == "en":
         result = analyze_en_text_transformer(text)
         result["language"] = "en"
         result["routing_mode"] = "direct_en_transformer"
-        result = apply_rule_boost(text, result, "en")
-        result = add_lime_explanation(text, result, "en")
-        return result
+        return finalize_result(text, result, "en")
 
     ar_result = analyze_ar_text_transformer(text)
     en_result = analyze_en_text_transformer(text)
@@ -184,9 +196,7 @@ def analyze_text_auto(text: str) -> dict:
             "ar_confidence": ar_conf,
             "en_confidence": en_conf
         }
-        ar_result = apply_rule_boost(text, ar_result, "ar")
-        ar_result = add_lime_explanation(text, ar_result, "ar")
-        return ar_result
+        return finalize_result(text, ar_result, "ar")
 
     en_result["language"] = "en"
     en_result["routing_mode"] = "fallback_dual_inference_transformer"
@@ -194,6 +204,4 @@ def analyze_text_auto(text: str) -> dict:
         "ar_confidence": ar_conf,
         "en_confidence": en_conf
     }
-    en_result = apply_rule_boost(text, en_result, "en")
-    en_result = add_lime_explanation(text, en_result, "en")
-    return en_result
+    return finalize_result(text, en_result, "en")

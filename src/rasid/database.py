@@ -12,6 +12,16 @@ def get_connection():
     return sqlite3.connect(DB_PATH)
 
 
+def ensure_column(cursor, table_name: str, column_name: str, column_type: str):
+    cursor.execute(f"PRAGMA table_info({table_name})")
+    columns = [row[1] for row in cursor.fetchall()]
+
+    if column_name not in columns:
+        cursor.execute(
+            f"ALTER TABLE {table_name} ADD COLUMN {column_name} {column_type}"
+        )
+
+
 def init_db():
     conn = get_connection()
     cursor = conn.cursor()
@@ -26,7 +36,8 @@ def init_db():
         language TEXT,
         confidence REAL,
         reasons TEXT,
-        lime_explanation TEXT
+        lime_explanation TEXT,
+        explanation TEXT
     )
     """)
 
@@ -44,6 +55,23 @@ def init_db():
     )
     """)
 
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS dispute_requests (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        timestamp TEXT,
+        ad_text TEXT,
+        ai_decision TEXT,
+        confidence REAL,
+        language TEXT,
+        reasons TEXT,
+        user_note TEXT,
+        status TEXT
+    )
+    """)
+
+    ensure_column(cursor, "analysis_logs", "lime_explanation", "TEXT")
+    ensure_column(cursor, "analysis_logs", "explanation", "TEXT")
+
     conn.commit()
     conn.close()
 
@@ -57,9 +85,9 @@ def save_analysis_to_db(result: dict, source: str = "api"):
     cursor.execute("""
     INSERT INTO analysis_logs (
         timestamp, source, input_type, decision, language,
-        confidence, reasons, lime_explanation
+        confidence, reasons, lime_explanation, explanation
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         datetime.now().isoformat(timespec="seconds"),
         source,
@@ -68,7 +96,8 @@ def save_analysis_to_db(result: dict, source: str = "api"):
         result.get("language", "unknown"),
         result.get("confidence", None),
         json.dumps(result.get("reasons", []), ensure_ascii=False),
-        json.dumps(result.get("lime_explanation", []), ensure_ascii=False)
+        json.dumps(result.get("lime_explanation", []), ensure_ascii=False),
+        result.get("explanation", "")
     ))
 
     conn.commit()
@@ -104,6 +133,7 @@ def save_review_to_db(review: dict):
 
 def load_analysis_df():
     init_db()
+
     conn = get_connection()
 
     df = pd.read_sql_query(
@@ -117,6 +147,7 @@ def load_analysis_df():
 
 def load_reviews_df():
     init_db()
+
     conn = get_connection()
 
     df = pd.read_sql_query(
@@ -126,20 +157,17 @@ def load_reviews_df():
 
     conn.close()
     return df
-DB_PATH = Path("logs/rasid.db")
 
 
 def load_disputes():
-    conn = sqlite3.connect(DB_PATH)
+    init_db()
 
-    query = """
-    SELECT *
-    FROM dispute_requests
-    ORDER BY id DESC
-    """
+    conn = get_connection()
 
-    df = pd.read_sql_query(query, conn)
+    df = pd.read_sql_query(
+        "SELECT * FROM dispute_requests ORDER BY id DESC",
+        conn
+    )
 
     conn.close()
-
     return df

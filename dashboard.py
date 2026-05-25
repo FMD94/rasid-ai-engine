@@ -2,245 +2,106 @@ import streamlit as st
 import pandas as pd
 import json
 import sqlite3
-import json
-from pathlib import Path
+import plotly.express as px
 from pathlib import Path
 from datetime import datetime
 from src.rasid.database import load_analysis_df, load_reviews_df, save_review_to_db
-DB_PATH = Path("logs/rasid.db")
-LOG_FILE = Path("logs/analysis_log.jsonl")
-REVIEW_FILE = Path("logs/moderator_reviews.jsonl")
 
+DB_PATH = Path("logs/rasid.db")
 ADMIN_USERNAME = "admin"
 ADMIN_PASSWORD = "rasid123"
 
-st.set_page_config(
-    page_title="RASID Dashboard",
-    page_icon="🛡️",
-    layout="wide"
-)
+st.set_page_config(page_title="RASID Dashboard", page_icon="🛡️", layout="wide")
+
+st.sidebar.markdown("## 🛡️ RASID AI Stack")
+st.sidebar.markdown("""
+### NLP Models
+- AraBERT v2
+- BERT-base
+
+### Explainability
+- LIME
+
+### Vision
+- OCR
+- Prototype Deepfake Signal
+
+### Backend
+- FastAPI
+
+### Dashboard
+- Streamlit
+
+### Database
+- SQLite
+
+### Detection Engine
+- Hybrid AI + Rules
+""")
 
 st.markdown("""
 <style>
-
-/* Main App */
-.stApp {
-    background: #07131f;
-    color: #eaf2f8;
-    font-family: 'Segoe UI', sans-serif;
-}
-
-.block-container {
-    padding-top: 2rem;
-    padding-left: 3rem;
-    padding-right: 3rem;
-}
-
-/* Header */
+.stApp { background: #07131f; color: #eaf2f8; font-family: 'Segoe UI', sans-serif; }
+.block-container { padding-top: 2rem; padding-left: 3rem; padding-right: 3rem; }
 .rasid-header {
     background: linear-gradient(135deg, #0a1a2a, #14283b);
-    padding: 32px;
-    border-radius: 24px;
-    margin-bottom: 30px;
-    border: 1px solid #24384d;
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+    padding: 32px; border-radius: 24px; margin-bottom: 30px;
+    border: 1px solid #24384d; box-shadow: 0 16px 40px rgba(0,0,0,0.25);
 }
-
-.rasid-title {
-    color: #ffffff;
-    font-size: 36px;
-    font-weight: 800;
-}
-
-.rasid-subtitle {
-    color: #9fb0bd;
-    font-size: 15px;
-}
-
-/* Cards */
+.rasid-title { color: #ffffff; font-size: 36px; font-weight: 800; }
+.rasid-subtitle { color: #9fb0bd; font-size: 15px; }
 .card {
-    background: #101c29;
-    border-radius: 22px;
-    padding: 24px;
-    margin-bottom: 20px;
-    border: 1px solid #24384d;
-    box-shadow: 0 10px 28px rgba(0,0,0,0.22);
+    background: #101c29; border-radius: 22px; padding: 24px; margin-bottom: 20px;
+    border: 1px solid #24384d; box-shadow: 0 10px 28px rgba(0,0,0,0.22);
 }
-
-/* Metrics */
-.metric-title {
-    color: #9fb0bd;
-    font-size: 14px;
-    font-weight: 600;
+.metric-title { color: #9fb0bd; font-size: 14px; font-weight: 600; }
+.metric-value { font-size: 34px; font-weight: 800; color: #ffffff; }
+.safe { color: #5ee0a0; }
+.manipulative { color: #e0b85a; }
+.fraud { color: #ff6b6b; }
+.badge-safe, .badge-manipulative, .badge-fraud {
+    padding: 8px 16px; border-radius: 999px; font-weight: 700;
 }
-
-.metric-value {
-    font-size: 34px;
-    font-weight: 800;
-    color: #ffffff;
-}
-
-/* Status Colors */
-.safe {
-    color: #5ee0a0;
-}
-
-.manipulative {
-    color: #e0b85a;
-}
-
-.fraud {
-    color: #ff6b6b;
-}
-
-/* Badges */
 .badge-safe {
-    background: rgba(94, 224, 160, 0.14);
-    color: #5ee0a0;
-    padding: 8px 16px;
-    border-radius: 999px;
-    font-weight: 700;
-    border: 1px solid rgba(94, 224, 160, 0.35);
+    background: rgba(94,224,160,0.14); color: #5ee0a0;
+    border: 1px solid rgba(94,224,160,0.35);
 }
-
 .badge-manipulative {
-    background: rgba(224, 184, 90, 0.16);
-    color: #e0b85a;
-    padding: 8px 16px;
-    border-radius: 999px;
-    font-weight: 700;
-    border: 1px solid rgba(224, 184, 90, 0.35);
+    background: rgba(224,184,90,0.16); color: #e0b85a;
+    border: 1px solid rgba(224,184,90,0.35);
 }
-
 .badge-fraud {
-    background: rgba(255, 107, 107, 0.14);
-    color: #ff6b6b;
-    padding: 8px 16px;
-    border-radius: 999px;
-    font-weight: 700;
-    border: 1px solid rgba(255, 107, 107, 0.35);
+    background: rgba(255,107,107,0.14); color: #ff6b6b;
+    border: 1px solid rgba(255,107,107,0.35);
 }
-
-/* Tabs */
-.stTabs [data-baseweb="tab-list"] {
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
+.stTabs [data-baseweb="tab-list"] { gap: 10px; margin-bottom: 20px; }
 .stTabs [data-baseweb="tab"] {
-    background: #101c29;
-    color: #9fb0bd;
-    border-radius: 14px;
-    padding: 11px 18px;
-    border: 1px solid #24384d;
-    font-weight: 700;
+    background: #101c29; color: #9fb0bd; border-radius: 14px;
+    padding: 11px 18px; border: 1px solid #24384d; font-weight: 700;
 }
-
 .stTabs [aria-selected="true"] {
-    background: #e0b85a !important;
-    color: #07131f !important;
+    background: #e0b85a !important; color: #07131f !important;
     border: 1px solid #e0b85a !important;
 }
-
-/* Buttons */
 .stButton > button {
-    background: #e0b85a;
-    color: #07131f;
-    border-radius: 14px;
-    border: none;
-    padding: 10px 20px;
-    font-weight: 800;
+    background: #e0b85a; color: #07131f; border-radius: 14px;
+    border: none; padding: 10px 20px; font-weight: 800;
 }
-
-.stButton > button:hover {
-    background: #f0c96a;
-    color: #07131f;
+.stButton > button:hover { background: #f0c96a; color: #07131f; }
+.stTextInput input, .stTextArea textarea, .stSelectbox div[data-baseweb="select"] {
+    background: #101c29 !important; color: #eaf2f8 !important;
+    border-radius: 14px !important; border: 1px solid #24384d !important;
 }
-
-/* Selectbox */
-.stSelectbox div[data-baseweb="select"] {
-    background: #101c29 !important;
-    color: #eaf2f8 !important;
-    border-radius: 14px !important;
-    border: 1px solid #24384d !important;
-}
-
-.stSelectbox * {
-    color: #eaf2f8 !important;
-}
-
-/* Text inputs and textarea */
-.stTextInput input,
-.stTextArea textarea {
-    background: #101c29 !important;
-    color: #eaf2f8 !important;
-    border-radius: 14px !important;
-    border: 1px solid #24384d !important;
-}
-
-.stTextArea textarea::placeholder {
-    color: #7f91a3 !important;
-}
-
-/* Radio buttons */
-.stRadio label {
-    color: #eaf2f8 !important;
-    font-weight: 600;
-}
-
-/* Tables */
-[data-testid="stDataFrame"] {
-    border-radius: 18px;
-    overflow: hidden;
-    border: 1px solid #24384d;
-}
-
-/* Charts */
-[data-testid="stVegaLiteChart"] {
-    background: #101c29;
-    border-radius: 18px;
-    padding: 12px;
-    border: 1px solid #24384d;
-}
-
-/* General text readability */
-p, li, label, div {
-    line-height: 1.65;
-}
-
-h1, h2, h3, h4 {
-    color: #ffffff;
-}
-
-/* Alerts */
-.stAlert {
-    border-radius: 16px;
-    background: #162536;
-    color: #eaf2f8;
-}
-
-/* Login Box */
+.stRadio label { color: #eaf2f8 !important; font-weight: 600; }
+[data-testid="stDataFrame"] { border-radius: 18px; overflow: hidden; border: 1px solid #24384d; }
+p, li, label, div { line-height: 1.65; }
+h1, h2, h3, h4 { color: #ffffff; }
+.stAlert { border-radius: 16px; }
 .login-box {
-    max-width: 440px;
-    margin: 90px auto;
-    background: #101c29;
-    padding: 38px;
-    border-radius: 28px;
-    border: 1px solid #24384d;
+    max-width: 440px; margin: 90px auto; background: #101c29;
+    padding: 38px; border-radius: 28px; border: 1px solid #24384d;
     box-shadow: 0 16px 40px rgba(0,0,0,0.28);
 }
-
-/* Small white empty cards fix */
-div[data-testid="stHorizontalBlock"] > div {
-    background: transparent;
-}
-
-/* Expander/dropdown readability */
-[data-baseweb="popover"] {
-    background: #101c29 !important;
-    color: #eaf2f8 !important;
-}
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -249,7 +110,7 @@ def login_page():
     st.markdown("""
     <div class="login-box">
         <h1 style="text-align:center;">🛡️ RASID</h1>
-        <p style="text-align:center; color:#6b7280;">
+        <p style="text-align:center; color:#9fb0bd;">
             Admin access for moderation and system supervision
         </p>
     </div>
@@ -268,25 +129,6 @@ def login_page():
                 st.error("Invalid username or password.")
 
 
-def load_jsonl(path):
-    if not path.exists():
-        return pd.DataFrame()
-
-    rows = []
-    with open(path, "r", encoding="utf-8") as f:
-        for line in f:
-            if line.strip():
-                rows.append(json.loads(line))
-
-    return pd.DataFrame(rows)
-
-
-def save_review(entry):
-    REVIEW_FILE.parent.mkdir(exist_ok=True)
-    with open(REVIEW_FILE, "a", encoding="utf-8") as f:
-        f.write(json.dumps(entry, ensure_ascii=False) + "\n")
-
-
 def decision_badge(decision):
     if decision == "Safe":
         return '<span class="badge-safe">Safe</span>'
@@ -295,6 +137,164 @@ def decision_badge(decision):
     if decision == "Fraud":
         return '<span class="badge-fraud">Fraud</span>'
     return decision
+
+
+def load_disputes():
+    conn = sqlite3.connect(DB_PATH)
+    try:
+        df = pd.read_sql_query("SELECT * FROM dispute_requests ORDER BY id DESC", conn)
+    except Exception:
+        df = pd.DataFrame()
+    conn.close()
+    return df
+
+
+def themed_pie(dataframe, names_col, values_col, color_col, color_map):
+    fig = px.pie(
+        dataframe,
+        values=values_col,
+        names=names_col,
+        hole=0.45,
+        color=color_col,
+        color_discrete_map=color_map
+    )
+
+    fig.update_layout(
+        paper_bgcolor="#101c29",
+        plot_bgcolor="#101c29",
+        font_color="#eaf2f8",
+        margin=dict(t=30, b=20, l=20, r=20),
+        legend=dict(bgcolor="#101c29", font=dict(color="#eaf2f8"))
+    )
+
+    fig.update_traces(
+        textfont_color="#eaf2f8",
+        marker=dict(line=dict(color="#07131f", width=2))
+    )
+
+    return fig
+
+
+def parse_json_field(value, default=None):
+    if default is None:
+        default = []
+
+    if isinstance(value, list):
+        return value
+
+    if isinstance(value, str):
+        try:
+            return json.loads(value)
+        except Exception:
+            return default
+
+    return default
+
+
+def display_explanation_block(latest):
+    st.markdown("#### Explanation")
+
+    deepfake_risk = latest.get("deepfake_risk", "")
+
+    if deepfake_risk == "high":
+        st.error("Potential synthetic or manipulated media detected.")
+    elif deepfake_risk == "medium":
+        st.warning("Moderate visual manipulation risk detected.")
+    elif deepfake_risk == "low":
+        st.success("No major visual manipulation indicators detected.")
+
+    extension_explanation = latest.get("explanation", "")
+
+    if extension_explanation and str(extension_explanation).strip() not in ["", "None", "nan"]:
+        st.write(extension_explanation)
+    else:
+        reasons = parse_json_field(latest.get("reasons", []), [])
+
+        if isinstance(reasons, list) and reasons:
+            for reason in reasons:
+                st.write(f"• {reason}")
+        else:
+            st.info("No general explanation available.")
+
+
+def display_lime_explanation(latest):
+    st.markdown("#### Why RASID Classified This Advertisement")
+
+    lime_data = parse_json_field(latest.get("lime_explanation", []), [])
+
+    suspicious_keywords = [
+        "offer", "limited", "exclusive", "guaranteed", "urgent", "free",
+        "win", "discount", "buy", "sale", "now", "today", "profit",
+        "investment", "reward", "cash", "promo", "click", "register",
+        "risk", "money", "income", "detox", "cure",
+
+        "عرض", "حصري", "مجانا", "اربح", "خصم", "اشتر", "تخفيض",
+        "الآن", "فوري", "مضمون", "استثمار", "ربح", "سجل", "اضغط",
+        "استرداد", "جائزة", "فرصة", "حصريا", "دخل", "أرباح", "علاج"
+    ]
+
+    shown = 0
+
+    if lime_data:
+        for item in lime_data:
+            if not isinstance(item, dict):
+                continue
+
+            if "word" not in item or "weight" not in item:
+                continue
+
+            word = str(item["word"]).strip().lower()
+            weight = float(item["weight"])
+
+            if len(word) <= 2:
+                continue
+
+            if abs(weight) < 0.02:
+                continue
+
+            if word not in suspicious_keywords:
+                continue
+
+            shown += 1
+
+            if weight > 0:
+                st.warning(
+                    f'This advertisement contains persuasive or manipulative wording such as "{word}".'
+                )
+            else:
+                st.info(
+                    f'The term "{word}" slightly reduced the manipulation probability.'
+                )
+
+    if shown == 0:
+        reasons = parse_json_field(latest.get("reasons", []), [])
+        found_reason = False
+
+        if isinstance(reasons, list):
+            for reason in reasons:
+                lowered = str(reason).lower()
+
+                if (
+                    "promo" in lowered or
+                    "advertisement" in lowered or
+                    "marketing" in lowered or
+                    "persuasive" in lowered or
+                    "manipulative" in lowered or
+                    "blocked phrase" in lowered or
+                    "flagged phrase" in lowered or
+                    "high-risk" in lowered or
+                    "عرض" in lowered or
+                    "خصم" in lowered or
+                    "ترويج" in lowered or
+                    "إعلان" in lowered
+                ):
+                    st.warning(reason)
+                    found_reason = True
+
+        if not found_reason:
+            st.info(
+                "RASID detected contextual advertisement risk patterns, but no strong keyword-level manipulation signal was isolated."
+            )
 
 
 if "logged_in" not in st.session_state:
@@ -335,43 +335,29 @@ if df.empty:
 df["decision_label"] = df["decision"].map(label_map).fillna(df["decision"])
 df["confidence"] = pd.to_numeric(df["confidence"], errors="coerce").fillna(0)
 
-def load_disputes():
-    conn = sqlite3.connect(DB_PATH)
-
-    query = """
-    SELECT *
-    FROM dispute_requests
-    ORDER BY id DESC
-    """
-
-    df = pd.read_sql_query(query, conn)
-
-    conn.close()
-
-    return df
-
-tab1, tab2, tab3, tab4 = st.tabs([
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "📊 Overview",
     "👤 Moderator Review",
     "🌍 Region Policy Check",
-    "🗂 Logs"
-    "Dispute Requests"
+    "🗂 Logs",
+    "⚠️ Dispute Requests"
 ])
 
 
 with tab1:
-    total_scans = len(df)
-    safe_count = (df["decision"] == "approved").sum()
-    misleading_count = (df["decision"] == "flagged").sum()
-    fraud_count = (df["decision"] == "blocked").sum()
+    st.markdown("## Live Detection Analytics")
+
+    safe_count = len(df[df["decision"] == "approved"])
+    manipulative_count = len(df[df["decision"] == "flagged"])
+    fraud_count = len(df[df["decision"] == "blocked"])
     avg_confidence = round(df["confidence"].mean(), 2)
 
     col1, col2, col3, col4 = st.columns(4)
 
     metrics = [
-        ("Total Scans", total_scans, ""),
+        ("Total Scans", len(df), ""),
         ("Safe", safe_count, "safe"),
-        ("Manipulative", misleading_count, "manipulative"),
+        ("Manipulative", manipulative_count, "manipulative"),
         ("Fraud", fraud_count, "fraud")
     ]
 
@@ -389,12 +375,68 @@ with tab1:
     with left:
         st.markdown('<div class="card">', unsafe_allow_html=True)
         st.subheader("Risk Distribution")
-        st.bar_chart(df["decision_label"].value_counts())
+
+        risk_counts = df["decision_label"].value_counts().reset_index()
+        risk_counts.columns = ["Decision", "Count"]
+
+        fig = themed_pie(
+            risk_counts,
+            "Decision",
+            "Count",
+            "Decision",
+            {
+                "Safe": "#5ee0a0",
+                "Manipulative": "#e0b85a",
+                "Fraud": "#ff6b6b"
+            }
+        )
+
+        st.plotly_chart(fig, use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+
+        st.markdown('<div class="card">', unsafe_allow_html=True)
+        st.subheader("Language Distribution")
+
+        lang_counts = df["language"].value_counts().reset_index()
+        lang_counts.columns = ["Language", "Count"]
+
+        fig_lang = themed_pie(
+            lang_counts,
+            "Language",
+            "Count",
+            "Language",
+            {
+                "ar": "#4cc9c0",
+                "en": "#5b6cff",
+                "unknown": "#9fb0bd"
+            }
+        )
+
+        st.plotly_chart(fig_lang, use_container_width=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
         st.markdown('<div class="card">', unsafe_allow_html=True)
         st.subheader("Input Type Distribution")
-        st.bar_chart(df["input_type"].value_counts())
+
+        input_counts = df["input_type"].value_counts().reset_index()
+        input_counts.columns = ["Input", "Count"]
+
+        fig_input = themed_pie(
+            input_counts,
+            "Input",
+            "Count",
+            "Input",
+            {
+                "text": "#5b6cff",
+                "image": "#4cc9c0",
+                "image_url": "#4cc9c0",
+                "video": "#e0b85a",
+                "video_url": "#e0b85a",
+                "unknown": "#9fb0bd"
+            }
+        )
+
+        st.plotly_chart(fig_input, use_container_width=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
     with right:
@@ -410,14 +452,11 @@ with tab1:
         st.write("**Language:**", latest.get("language", "unknown"))
         st.write("**Input Type:**", latest.get("input_type", "unknown"))
         st.write("**Source:**", latest.get("source", "unknown"))
+        st.write("**Deepfake Risk:**", latest.get("deepfake_risk", "unknown"))
+        st.write("**Deepfake Score:**", latest.get("deepfake_score", "N/A"))
 
-        st.markdown("#### Explanation")
-        reasons = latest.get("reasons", [])
-        if isinstance(reasons, list):
-            for reason in reasons:
-                st.write(f"• {reason}")
-        else:
-            st.write(reasons)
+        display_explanation_block(latest)
+        display_lime_explanation(latest)
 
         st.markdown('</div>', unsafe_allow_html=True)
 
@@ -444,17 +483,19 @@ with tab2:
     with col_a:
         st.markdown('<div class="card">', unsafe_allow_html=True)
         st.write("### AI Analysis")
-
         st.markdown(decision_badge(selected.get("decision_label", "Unknown")), unsafe_allow_html=True)
         st.write("")
         st.write("**Confidence:**", selected.get("confidence", 0))
         st.write("**Language:**", selected.get("language", "unknown"))
         st.write("**Input Type:**", selected.get("input_type", "unknown"))
         st.write("**Timestamp:**", selected.get("timestamp", "unknown"))
+        st.write("**Deepfake Risk:**", selected.get("deepfake_risk", "unknown"))
+        st.write("**Deepfake Score:**", selected.get("deepfake_score", "N/A"))
 
         st.write("### Reasons")
-        reasons = selected.get("reasons", [])
-        if isinstance(reasons, list):
+        reasons = parse_json_field(selected.get("reasons", []), [])
+
+        if isinstance(reasons, list) and reasons:
             for reason in reasons:
                 st.write(f"• {reason}")
         else:
@@ -528,20 +569,16 @@ with tab3:
 
     policy_warning = "No additional policy warning detected."
 
-    if policy_area == "Finance" and current_decision in ["Misleading", "Fraud"]:
+    if policy_area == "Finance" and current_decision in ["Manipulative", "Fraud"]:
         policy_warning = "Financial advertisements require human review when they contain profit guarantees, fixed income claims, or risk-free investment language."
-
-    elif policy_area == "Health" and current_decision in ["Misleading", "Fraud"]:
+    elif policy_area == "Health" and current_decision in ["Manipulative", "Fraud"]:
         policy_warning = "Health advertisements require strict review when they contain cure claims, guaranteed results, or medical treatment promises."
-
     elif region == "Saudi Arabia" and policy_area in ["Finance", "Health"]:
         policy_warning = "Regional policy check recommends moderator review for sensitive finance or health advertisement claims."
-
     elif current_decision == "Fraud":
         policy_warning = "High-risk content should be escalated for human moderation."
-
     elif current_decision == "Manipulative":
-        policy_warning = "Potentially misleading content should be reviewed before approval."
+        policy_warning = "Potentially manipulative content should be reviewed before approval."
 
     st.warning(policy_warning)
     st.write("**Selected Region:**", region)
@@ -553,21 +590,29 @@ with tab3:
 with tab4:
     st.subheader("System Logs")
 
-    display_df = df.tail(50)[[
+    display_columns = [
         "timestamp",
         "source",
         "input_type",
         "decision_label",
         "language",
         "confidence",
+        "deepfake_risk",
+        "deepfake_score",
         "reasons"
-    ]].rename(columns={
+    ]
+
+    available_columns = [col for col in display_columns if col in df.columns]
+
+    display_df = df.tail(50)[available_columns].rename(columns={
         "timestamp": "Time",
         "source": "Source",
         "input_type": "Input Type",
         "decision_label": "Decision",
         "language": "Language",
         "confidence": "Confidence",
+        "deepfake_risk": "Deepfake Risk",
+        "deepfake_score": "Deepfake Score",
         "reasons": "Reasons"
     })
 
@@ -581,19 +626,16 @@ with tab4:
     else:
         st.dataframe(reviews_df.tail(30), use_container_width=True)
 
-with tab4:
 
+with tab5:
     st.markdown("## User Dispute Requests")
 
     disputes_df = load_disputes()
 
     if disputes_df.empty:
         st.info("No dispute requests found.")
-
     else:
-
         for idx, row in disputes_df.iterrows():
-
             st.markdown("---")
 
             decision = row["ai_decision"]
@@ -605,7 +647,6 @@ with tab4:
             }.get(decision, decision)
 
             st.markdown(f"### Submission #{row['id']}")
-
             st.write("**Status:**", row["status"])
             st.write("**AI Decision:**", display_decision)
             st.write("**Confidence:**", row["confidence"])
@@ -620,7 +661,7 @@ with tab4:
                 reasons = json.loads(row["reasons"])
                 for reason in reasons:
                     st.write(f"• {reason}")
-            except:
+            except Exception:
                 st.write(row["reasons"])
 
             st.write("### User Appeal")
@@ -646,7 +687,6 @@ with tab4:
                 f"Resolve Request #{row['id']}",
                 key=f"resolve_{row['id']}"
             ):
-
                 conn = sqlite3.connect(DB_PATH)
                 cursor = conn.cursor()
 

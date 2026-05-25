@@ -1,19 +1,25 @@
 from fastapi import FastAPI, UploadFile, File, Form
 from pathlib import Path
 from typing import Optional
-from src.rasid.database import save_analysis_to_db
 import shutil
 import requests
 
 from fastapi.middleware.cors import CORSMiddleware
+
+from src.rasid.database import save_analysis_to_db
+from src.rasid.logger import save_analysis_log
+
 from src.rasid.pipeline_en_text import analyze_en_text
 from src.rasid.pipeline_ar_text import analyze_ar_text
 from src.rasid.pipeline_text_auto import analyze_text_auto
 from src.rasid.pipeline_ar_image import analyze_ar_image
 from src.rasid.pipeline_ar_video import analyze_ar_video
-from src.rasid.logger import save_analysis_log
+
+from src.vision.deepfake_detector import detector
+
 
 app = FastAPI(title="RASID API", version="1.0")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -24,6 +30,32 @@ app.add_middleware(
 
 UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
+
+
+def add_deepfake_signal(result: dict, deepfake_result: dict, media_type: str):
+    result["deepfake_score"] = deepfake_result.get("deepfake_score")
+    result["deepfake_risk"] = deepfake_result.get("deepfake_risk")
+
+    reasons = result.get("reasons", [])
+    if not isinstance(reasons, list):
+        reasons = [str(reasons)]
+
+    deepfake_reason = deepfake_result.get("deepfake_reason")
+    if deepfake_reason:
+        reasons.append(deepfake_reason)
+
+    if deepfake_result.get("deepfake_risk") == "high":
+        result["decision"] = "blocked"
+        reasons.append(f"High visual manipulation risk detected in {media_type}.")
+
+    elif deepfake_result.get("deepfake_risk") == "medium" and result.get("decision") == "approved":
+        result["decision"] = "flagged"
+        reasons.append(f"Medium visual manipulation risk detected in {media_type}.")
+
+    result["reasons"] = reasons
+    return result
+
+
 def save_result(result: dict, source: str, input_type: str):
     result["input_type"] = input_type
     save_analysis_log(result, source=source)
@@ -39,17 +71,20 @@ def root():
 @app.post("/analyze/text")
 def analyze_text(text: str = Form(...)):
     result = analyze_ar_text(text)
-    return result
+    return save_result(result, source="text_api", input_type="text")
+
 
 @app.post("/analyze/text/en")
 def analyze_text_en(text: str = Form(...)):
     result = analyze_en_text(text)
-    return result
+    return save_result(result, source="text_en_api", input_type="text")
+
 
 @app.post("/analyze/text/auto")
 def analyze_text_auto_endpoint(text: str = Form(...)):
     result = analyze_text_auto(text)
     return save_result(result, source="text_auto_api", input_type="text")
+
 
 @app.post("/analyze/image")
 def analyze_image(
@@ -67,12 +102,17 @@ def analyze_image(
         caption_text=caption_text,
         language_hint=language_hint.strip().lower()
     )
+
+    deepfake_result = detector.analyze_image(str(file_path))
+    result = add_deepfake_signal(result, deepfake_result, media_type="image")
+
     return save_result(result, source="image_api", input_type="image")
+
 
 @app.post("/analyze/image-url")
 def analyze_image_url(image_url: str = Form(...)):
     try:
-        response = requests.get(image_url, timeout=10)
+        response = requests.get(image_url, timeout=20)
         response.raise_for_status()
 
         suffix = Path(image_url.split("?")[0]).suffix.lower()
@@ -85,18 +125,22 @@ def analyze_image_url(image_url: str = Form(...)):
             buffer.write(response.content)
 
         result = analyze_ar_image(str(file_path))
-        result["input_type"] = "image_url"
         result["source_url"] = image_url
-        save_analysis_log(result, source="image_url_api")
-        save_analysis_to_db(result, source="text_api")
+
+        deepfake_result = detector.analyze_image(str(file_path))
+        result = add_deepfake_signal(result, deepfake_result, media_type="image URL")
 
         return save_result(result, source="image_url_api", input_type="image_url")
 
     except Exception as e:
-        return {
-            "error": "Could not analyze image URL",
-            "details": str(e)
+        result = {
+            "decision": "error",
+            "confidence": 0,
+            "language": "unknown",
+            "source_url": image_url,
+            "reasons": [f"Could not analyze image URL: {str(e)}"]
         }
+        return save_result(result, source="image_url_api", input_type="image_url")
 
 
 @app.post("/analyze/video")
@@ -107,10 +151,14 @@ def analyze_video(file: UploadFile = File(...)):
         shutil.copyfileobj(file.file, buffer)
 
     result = analyze_ar_video(str(file_path))
+
+    deepfake_result = detector.analyze_video(str(file_path))
+    result = add_deepfake_signal(result, deepfake_result, media_type="video")
+
     return save_result(result, source="video_api", input_type="video")
 
-@app.post("/analyze/video-url")
 
+@app.post("/analyze/video-url")
 def analyze_video_url(video_url: str = Form(...)):
     try:
         response = requests.get(video_url, timeout=20)
@@ -126,18 +174,23 @@ def analyze_video_url(video_url: str = Form(...)):
             buffer.write(response.content)
 
         result = analyze_ar_video(str(file_path))
-        result["input_type"] = "video_url"
         result["source_url"] = video_url
-        save_analysis_log(result, source="video_url_api")
-        save_analysis_to_db(result, source="text_api")
+
+        deepfake_result = detector.analyze_video(str(file_path))
+        result = add_deepfake_signal(result, deepfake_result, media_type="video URL")
 
         return save_result(result, source="video_url_api", input_type="video_url")
 
     except Exception as e:
-        return {
-            "error": "Could not analyze video URL",
-            "details": str(e)
+        result = {
+            "decision": "error",
+            "confidence": 0,
+            "language": "unknown",
+            "source_url": video_url,
+            "reasons": [f"Could not analyze video URL: {str(e)}"]
         }
+        return save_result(result, source="video_url_api", input_type="video_url")
+
 
 @app.post("/analyze")
 def analyze_unified(
@@ -145,15 +198,10 @@ def analyze_unified(
     caption_text: str = Form(""),
     file: Optional[UploadFile] = File(None)
 ):
-    # Case 1: text only
     if text.strip() and file is None:
-        result = analyze_ar_text(text.strip())
-        result["input_type"] = "text"
-        save_analysis_log(result, source="text_api")
-        save_analysis_to_db(result, source="text_api")
-        return result
+        result = analyze_text_auto(text.strip())
+        return save_result(result, source="text_auto_api", input_type="text")
 
-    # Case 2 or 3: file uploaded
     if file is not None:
         file_path = UPLOAD_DIR / file.filename
 
@@ -162,26 +210,34 @@ def analyze_unified(
 
         suffix = file_path.suffix.lower()
 
-        # Image types
         if suffix in [".png", ".jpg", ".jpeg", ".webp"]:
             result = analyze_ar_image(str(file_path), caption_text=caption_text)
-            result["input_type"] = "image"
-            save_analysis_log(result, source="image_api")
-            save_analysis_to_db(result, source="text_api")
-            return result
 
-        # Video types
+            deepfake_result = detector.analyze_image(str(file_path))
+            result = add_deepfake_signal(result, deepfake_result, media_type="image")
+
+            return save_result(result, source="image_api", input_type="image")
+
         if suffix in [".mp4", ".mov", ".avi", ".mkv"]:
             result = analyze_ar_video(str(file_path))
-            result["input_type"] = "video"
-            save_analysis_log(result, source="video_api")
-            save_analysis_to_db(result, source="text_api")
-            return result
+
+            deepfake_result = detector.analyze_video(str(file_path))
+            result = add_deepfake_signal(result, deepfake_result, media_type="video")
+
+            return save_result(result, source="video_api", input_type="video")
 
         return {
-            "error": f"Unsupported file type: {suffix}"
+            "decision": "error",
+            "confidence": 0,
+            "language": "unknown",
+            "input_type": "unsupported",
+            "reasons": [f"Unsupported file type: {suffix}"]
         }
 
     return {
-        "error": "Please provide either text or a supported image/video file."
+        "decision": "error",
+        "confidence": 0,
+        "language": "unknown",
+        "input_type": "empty",
+        "reasons": ["Please provide either text or a supported image/video file."]
     }
