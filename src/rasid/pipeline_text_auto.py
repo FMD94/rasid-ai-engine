@@ -72,7 +72,7 @@ def apply_rule_boost(text: str, result: dict, lang: str) -> dict:
             return result
 
     for phrase in flagged_phrases:
-        if phrase.lower() in text_lower:
+        if phrase.lower() in text_lower and result.get("decision") != "approved":
             result["decision"] = "flagged"
             result["reasons"] = [f"Rule matched flagged phrase: {phrase}"] + reasons
             result["rule_override"] = True
@@ -108,7 +108,7 @@ def apply_safety_gate(result: dict) -> dict:
         result["decision"] = "flagged"
         reasons.append("Low-confidence fraud prediction was downgraded to manipulative.")
 
-    elif decision == "flagged" and confidence < 0.45:
+    elif decision == "flagged" and confidence < 0.65:
         result["decision"] = "approved"
         reasons.append("Low-confidence manipulative prediction was treated as safe.")
 
