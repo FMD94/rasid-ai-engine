@@ -214,6 +214,42 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
 
     const lowerText = text.toLowerCase();
 
+    const clickbaitPatterns = [
+      "ابدأ الاختبار",
+      "اختبر نفسك",
+      "اكتشف الآن",
+      "لن تصدق",
+      "اعرف من",
+      "you won't believe",
+      "take the test",
+      "start quiz",
+      "find out now"
+    ];
+
+    if (
+      !isDemoSite &&
+      result.decision === "approved" &&
+      clickbaitPatterns.some(p => lowerText.includes(p))
+    ) {
+      result.decision = "flagged";
+      result.confidence = Math.max(result.confidence || 0, 0.75);
+
+      if (!Array.isArray(result.reasons)) {
+        result.reasons = [];
+      }
+
+      result.reasons.push(
+        "Clickbait or emotionally manipulative advertising pattern detected."
+      );
+    }
+
+    const isMixedDemo =
+      isDemoSite &&
+    (
+      lowerText.includes("mixed media advertisement test") ||
+      currentUrl.includes("mixed")
+    );
+
     const fraudPatterns = [
       "guaranteed profit",
       "zero risk",
@@ -233,7 +269,37 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
     ];
 
     const manipulativePatterns = [
+      "اربح",
+      "دولار لكل إجابة",
+      "استطلاع",
+      "ربح ما يصل",
+      "لكل إجابة",
+      "مقابل إجابة",
+      "اكسب",
+      "earn up to",
+      "$5 per answer",
+      "per answer",
+      "survey",
+      "paid survey",
+      "quiz",
+      "start quiz",
+      "take the test",
+      "click here",
+      "discover now",
+      "find out now",
+      "you won't believe",
+      "see who",
+      "which celebrity",
+      "who is your soulmate",
+      "ابدأ الاختبار",
+      "اختبر نفسك",
+      "اكتشف الآن",
+      "لن تصدق",
+      "اعرف من",
+      "من هو شريك حياتك",
+      "الشخص الذي من المفترض أن تكون معه",
       "limited time",
+      "limited-time",
       "only today",
       "register now",
       "don't miss",
@@ -251,11 +317,11 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
     const isFraudDemo = fraudPatterns.some(p => lowerText.includes(p));
     const isManipulativeDemo = manipulativePatterns.some(p => lowerText.includes(p));
 
-    if (isDemoSite) {
+    if (isDemoSite && !isMixedDemo) {
       if (isFraudDemo) {
-        result.decision = "blocked";
-        result.confidence = 0.90;
-        result.reasons.push("Demo fraud pattern detected in the active advertisement.");
+      result.decision = "blocked";
+      result.confidence = 0.90;
+      result.reasons.push("Demo fraud pattern detected in the active advertisement.");
       } else if (isManipulativeDemo) {
         result.decision = "flagged";
         result.confidence = 0.82;
@@ -267,6 +333,12 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
       }
     }
 
+if (isMixedDemo) {
+  result.decision = "flagged";
+  result.confidence = 0.85;
+  result.reasons.push("Mixed media page detected: advertisements are highlighted individually by risk level.");
+}
+
     try {
       const adItems = await getPageAdItems();
       const adResults = [];
@@ -274,9 +346,37 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
       for (const ad of adItems) {
         let adDecision = result.decision;
 
-        if (isDemoSite) {
+        if (isDemoSite && !isMixedDemo) {
           adDecision = result.decision;
-        } else {
+        } else if (isMixedDemo || !isDemoSite) {
+            const adText = (ad.text || "").toLowerCase();
+
+          const clickbaitPatterns = [
+            "take test",
+            "take the test",
+            "start quiz",
+            "you'll marry",
+            "you will marry",
+            "person you'll marry",
+            "ابدأ الاختبار",
+            "اختبر نفسك",
+            "اكتشف الآن",
+            "لن تصدق",
+            "اعرف من"
+          ];
+
+          if (fraudPatterns.some(p => adText.includes(p))) {
+            adDecision = "blocked";
+          } else if (
+            manipulativePatterns.some(p => adText.includes(p)) ||
+            clickbaitPatterns.some(p => adText.includes(p))
+          ) {
+            adDecision = "flagged";
+          } else {
+            adDecision = "approved";
+          }
+
+      } else {
           adDecision = "approved";
 
           if (ad.text && ad.text.trim().length > 10) {
@@ -294,6 +394,13 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
             }
           }
         }
+        if (
+          !isDemoSite &&
+          result.decision === "flagged" &&
+          adDecision === "approved"
+        ) {
+          adDecision = "flagged";
+        }
 
         adResults.push({
           index: ad.index,
@@ -309,6 +416,61 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
       console.warn("Per-ad analysis failed:", e);
     }
 
+    if (
+      !isDemoSite &&
+      result.decision === "approved" &&
+      result.confidence !== null &&
+      result.confidence !== undefined &&
+      result.confidence < 0.70
+      ) {
+      result.decision = "flagged";
+      result.confidence = Math.max(result.confidence || 0, 0.60);
+
+      if (!Array.isArray(result.reasons)) {
+        result.reasons = [];
+      }
+
+      result.reasons.push(
+        "Low-confidence safe prediction on a live website was escalated for caution."
+     );
+  }
+
+    const liveManipulativePatterns = [
+  "start trading",
+  "trade gold",
+  "leverage",
+  "gain an edge",
+  "investment opportunity",
+  "subscribe now",
+  "limited offer",
+  "exclusive",
+  "act now",
+  "sign up today",
+  "apply today",
+  "ابدأ التداول",
+  "تداول",
+  "رافعة مالية",
+  "فرصة استثمارية",
+  "سجل الآن",
+  "اشترك الآن"
+];
+
+if (
+  !isDemoSite &&
+  result.decision !== "blocked" &&
+  liveManipulativePatterns.some(pattern => lowerText.includes(pattern))
+) {
+  result.decision = "flagged";
+  result.confidence = Math.max(result.confidence || 0, 0.70);
+
+  if (!Array.isArray(result.reasons)) {
+    result.reasons = [];
+  }
+
+  result.reasons.push(
+    "Live-site promotional or investment-related advertising pattern detected."
+  );
+}
     const score = result.confidence ?? null;
 
     const labelMap = {
