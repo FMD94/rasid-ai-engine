@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>RASID Demo Advertisements</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #07131f;
+      color: white;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #10213b;
+      padding: 30px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 34px;
+    }
+
+    header p {
+      color: #d7e6f2;
+      margin-top: 10px;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 24px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn, .nav-btn {
+      padding: 12px 26px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      background: #f4f4f4;
+      color: #111;
+    }
+
+    .tab-btn.active {
+      background: #e0b85a;
+    }
+
+    .tab-content {
+      display: none;
+      max-width: 950px;
+      margin: 0 auto 50px;
+      background: #10213b;
+      padding: 28px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .ad-slide {
+      display: none;
+    }
+
+    .ad-slide.active {
+      display: block;
+    }
+
+    .ad-image {
+      width: 100%;
+      max-width: 700px;
+      border-radius: 12px;
+      border: 2px solid #24384d;
+      margin: 20px auto;
+      display: block;
+    }
+
+    .ad-text {
+      font-size: 18px;
+      line-height: 1.7;
+    }
+
+    .controls {
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .counter {
+      margin-top: 12px;
+      color: #cfd8e3;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>RASID Demonstration Environment</h1>
+  <p>Controlled Bilingual Advertisement Testing Website</p>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('safe')">Safe Advertisement</button>
+  <button class="tab-btn" onclick="showTab('manipulative')">Manipulative Advertisement</button>
+  <button class="tab-btn" onclick="showTab('fraud')">Fraud Advertisement</button>
+</div>
+
+<!-- SAFE TAB -->
+<div id="safe" class="tab-content active">
+  <h2>Safe Advertisements</h2>
+
+  <div class="ad-slide active">
+    <img src="images/safe_ad.png" class="ad-image" alt="Safe English laptop advertisement">
+    <p class="ad-text">
+      ASUS Laptop with Intel Core i7 Processor, 16GB RAM and Official Warranty. Price: 3,499 SAR.
+    </p>
+  </div>
+
+  <div class="ad-slide">
+    <img src="images/safe_ar_1.png" class="ad-image" alt="Safe Arabic electronics advertisement">
+    <p class="ad-text" dir="rtl">
+      لابتوب ASUS بمعالج Intel Core i7، ذاكرة 16GB، ضمان رسمي، السعر 5000 ريال.
+    </p>
+  </div>
+
+  <div class="ad-slide">
+    <img src="images/safe_en_2.png" class="ad-image" alt="Safe English education advertisement">
+    <p class="ad-text">
+      Computer Science Program. Applications Open. Accredited Degree. Learn more about the curriculum.
+    </p>
+  </div>
+
+  <div class="ad-slide">
+    <img src="images/safe_ar_2.png" class="ad-image" alt="Safe Arabic banking advertisement">
+    <p class="ad-text" dir="rtl">
+      تعرف على خدماتنا المصرفية وحلولنا المالية المتنوعة. الشروط والأحكام تنطبق.
+    </p>
+  </div>
+
+  <div class="controls">
+    <button class="nav-btn" onclick="prevAd('safe')">◀ Previous</button>
+    <button class="nav-btn" onclick="nextAd('safe')">Next ▶</button>
+  </div>
+  <div class="counter" id="safe-counter">1 / 4</div>
+</div>
+
+<!-- MANIPULATIVE TAB -->
+<div id="manipulative" class="tab-content">
+  <h2>Manipulative Advertisements</h2>
+
+  <div class="ad-slide active">
+    <img src="images/manipulative_ad.png" class="ad-image" alt="Manipulative English urgency advertisement">
+    <p class="ad-text">
+      Limited Time Offer! Only Today! Register Now! Don't Miss This Exclusive Deal!
+    </p>
+  </div>
+
+  <div class="ad-slide">
+    <img src="images/manipulative_en_2.png" class="ad-image" alt="Manipulative English exclusive offer advertisement">
+    <p class="ad-text">
+      Exclusive Offer! Act Now! Limited Spots Available! Offer Expires Soon!
+    </p>
+  </div>
+
+  <div class="ad-slide">
+    <img src="images/manipulative_ar_1.png" class="ad-image" alt="Manipulative Arabic limited offer advertisement">
+    <p class="ad-text" dir="rtl">
+      عرض لفترة محدودة! سجل الآن! لا تفوت الفرصة الحصرية اليوم فقط.
+    </p>
+  </div>
+
+  <div class="ad-slide">
+    <img src="images/manipulative_ar_2.png" class="ad-image" alt="Manipulative Arabic urgency advertisement">
+    <p class="ad-text" dir="rtl">
+      أماكن محدودة! سارع بالتسجيل قبل انتهاء العرض قريباً.
+    </p>
+  </div>
+
+  <div class="controls">
+    <button class="nav-btn" onclick="prevAd('manipulative')">◀ Previous</button>
+    <button class="nav-btn" onclick="nextAd('manipulative')">Next ▶</button>
+  </div>
+  <div class="counter" id="manipulative-counter">1 / 4</div>
+</div>
+
+<!-- FRAUD TAB -->
+<div id="fraud" class="tab-content">
+  <h2>Fraud Advertisements</h2>
+
+  <div class="ad-slide active">
+    <img src="images/fraud_ad.png" class="ad-image" alt="Fraud English weight loss advertisement">
+    <p class="ad-text">
+      Guaranteed Profit. Zero Risk Investment. Double Your Money Instantly. Earn Thousands Daily.
+    </p>
+  </div>
+
+  <div class="ad-slide">
+    <img src="images/fraud_en_2.png" class="ad-image" alt="Fraud English financial advertisement">
+    <p class="ad-text">
+      Guaranteed Profit. Zero Risk. Double Your Money in 24 Hours. Start Now.
+    </p>
+  </div>
+
+  <div class="ad-slide">
+    <img src="images/fraud_ar_1.png" class="ad-image" alt="Fraud Arabic financial advertisement">
+    <p class="ad-text" dir="rtl">
+      اربح آلاف الريالات يومياً بدون أي مخاطرة. أرباح مضمونة خلال 24 ساعة.
+    </p>
+  </div>
+
+  <div class="ad-slide">
+    <img src="images/fraud_ar_2.png" class="ad-image" alt="Fraud Arabic health advertisement">
+    <p class="ad-text" dir="rtl">
+      اخسر 10 كيلو خلال أسبوع. نتائج مضمونة 100%. بدون رياضة أو حمية.
+    </p>
+  </div>
+
+  <div class="controls">
+    <button class="nav-btn" onclick="prevAd('fraud')">◀ Previous</button>
+    <button class="nav-btn" onclick="nextAd('fraud')">Next ▶</button>
+  </div>
+  <div class="counter" id="fraud-counter">1 / 4</div>
+</div>
+
+<script>
+  const slideIndex = {
+    safe: 0,
+    manipulative: 0,
+    fraud: 0
+  };
+
+  function showTab(tabId) {
+    document.querySelectorAll(".tab-content").forEach(tab => {
+      tab.classList.remove("active");
+    });
+
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.classList.remove("active");
+    });
+
+    document.getElementById(tabId).classList.add("active");
+    event.target.classList.add("active");
+    updateSlides(tabId);
+  }
+
+  function updateSlides(tabId) {
+    const tab = document.getElementById(tabId);
+    const slides = tab.querySelectorAll(".ad-slide");
+
+    slides.forEach(slide => slide.classList.remove("active"));
+    slides[slideIndex[tabId]].classList.add("active");
+
+    document.getElementById(tabId + "-counter").textContent =
+      (slideIndex[tabId] + 1) + " / " + slides.length;
+  }
+
+  function nextAd(tabId) {
+    const slides = document.getElementById(tabId).querySelectorAll(".ad-slide");
+    slideIndex[tabId] = (slideIndex[tabId] + 1) % slides.length;
+    updateSlides(tabId);
+  }
+
+  function prevAd(tabId) {
+    const slides = document.getElementById(tabId).querySelectorAll(".ad-slide");
+    slideIndex[tabId] = (slideIndex[tabId] - 1 + slides.length) % slides.length;
+    updateSlides(tabId);
+  }
+</script>
+
+</body>
+</html>

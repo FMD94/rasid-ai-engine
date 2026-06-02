@@ -50,6 +50,15 @@ AR_BLOCKED_PHRASES = [
 ]
 
 
+SAFE_CONTEXT_WORDS = [
+    "news", "article", "report", "said", "according", "published",
+    "government", "mayor", "police", "protest", "election",
+    "aljazeera", "bbc", "reuters", "cnn", "breaking news",
+    "أخبار", "مقال", "تقرير", "قال", "وفقا", "الحكومة", "الشرطة",
+    "الانتخابات", "الاحتجاج", "الخبر", "الصحيفة"
+]
+
+
 def apply_rule_boost(text: str, result: dict, lang: str) -> dict:
     text_lower = text.lower()
 
@@ -83,7 +92,8 @@ def apply_rule_boost(text: str, result: dict, lang: str) -> dict:
     return result
 
 
-def apply_safety_gate(result: dict) -> dict:
+def apply_safety_gate(text: str, result: dict) -> dict:
+    text_lower = text.lower()
     confidence = float(result.get("confidence", 0))
     decision = result.get("decision", "approved")
 
@@ -104,13 +114,21 @@ def apply_safety_gate(result: dict) -> dict:
         for reason in reasons
     )
 
+    safe_context_detected = any(word in text_lower for word in SAFE_CONTEXT_WORDS)
+
     if decision == "blocked" and confidence < 0.60 and not strong_fraud_reason:
         result["decision"] = "flagged"
         reasons.append("Low-confidence fraud prediction was downgraded to manipulative.")
 
-    elif decision == "flagged" and confidence < 0.65:
+    if result["decision"] == "flagged" and confidence < 0.75:
         result["decision"] = "approved"
+        result["confidence"] = round(1 - confidence, 2)
         reasons.append("Low-confidence manipulative prediction was treated as safe.")
+
+    if result["decision"] == "flagged" and confidence < 0.85 and safe_context_detected:
+        result["decision"] = "approved"
+        result["confidence"] = round(1 - confidence, 2)
+        reasons.append("News/article context detected; low-confidence manipulative prediction treated as safe.")
 
     result["reasons"] = reasons
     return result
@@ -118,29 +136,22 @@ def apply_safety_gate(result: dict) -> dict:
 
 def add_user_friendly_explanation(result: dict) -> dict:
     decision = result.get("decision", "approved")
-    reasons = result.get("reasons", [])
-
-    if not isinstance(reasons, list):
-        reasons = [str(reasons)]
 
     if decision == "approved":
         result["explanation"] = (
             "RASID classified this content as Safe because no strong manipulative, fraudulent, "
             "or high-risk advertising patterns were detected."
         )
-
     elif decision == "flagged":
         result["explanation"] = (
             "RASID classified this content as Manipulative because it contains persuasive advertising "
             "signals such as urgency, exclusivity, pressure language, or promotional wording."
         )
-
     elif decision == "blocked":
         result["explanation"] = (
             "RASID classified this content as Fraud because it contains high-risk claims such as "
             "guaranteed profit, zero-risk investment, instant results, or unrealistic promises."
         )
-
     else:
         result["explanation"] = "RASID could not determine a clear safety category for this content."
 
@@ -162,7 +173,7 @@ def add_lime_explanation(text: str, result: dict, lang: str) -> dict:
 
 def finalize_result(text: str, result: dict, lang: str) -> dict:
     result = apply_rule_boost(text, result, lang)
-    result = apply_safety_gate(result)
+    result = apply_safety_gate(text, result)
     result = add_user_friendly_explanation(result)
     result = add_lime_explanation(text, result, lang)
     return result
