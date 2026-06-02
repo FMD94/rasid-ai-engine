@@ -452,8 +452,16 @@ with tab1:
         st.write("**Language:**", latest.get("language", "unknown"))
         st.write("**Input Type:**", latest.get("input_type", "unknown"))
         st.write("**Source:**", latest.get("source", "unknown"))
-        st.write("**Deepfake Risk:**", latest.get("deepfake_risk", "unknown"))
-        st.write("**Deepfake Score:**", latest.get("deepfake_score", "N/A"))
+        deepfake_risk = latest.get("deepfake_risk", "unknown")
+        deepfake_score = latest.get("deepfake_score", "N/A")
+
+        if deepfake_risk in ["unknown", "", None]:
+            st.write("**Deepfake Analysis:** No deepfake indicators detected")
+        else:
+            st.write(f"**Deepfake Analysis:** {deepfake_risk}")
+
+        if deepfake_score not in ["N/A", "", None]:
+            st.write(f"**Deepfake Confidence:** {deepfake_score}")
 
         display_explanation_block(latest)
         display_lime_explanation(latest)
@@ -489,8 +497,16 @@ with tab2:
         st.write("**Language:**", selected.get("language", "unknown"))
         st.write("**Input Type:**", selected.get("input_type", "unknown"))
         st.write("**Timestamp:**", selected.get("timestamp", "unknown"))
-        st.write("**Deepfake Risk:**", selected.get("deepfake_risk", "unknown"))
-        st.write("**Deepfake Score:**", selected.get("deepfake_score", "N/A"))
+        deepfake_risk = selected.get("deepfake_risk", "unknown")
+        deepfake_score = selected.get("deepfake_score", "N/A")
+
+        if deepfake_risk in ["unknown", "", None]:
+            st.write("**Deepfake Analysis:** No deepfake indicators detected")
+        else:
+            st.write(f"**Deepfake Analysis:** {deepfake_risk}")
+
+        if deepfake_score not in ["N/A", "", None]:
+            st.write(f"**Deepfake Confidence:** {deepfake_score}")
 
         st.write("### Reasons")
         reasons = parse_json_field(selected.get("reasons", []), [])
