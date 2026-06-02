@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>RASID</title>
+
+  <style>
+    body {
+      width: 380px;
+      margin: 0;
+      padding: 16px;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #07131f;
+      color: #eaf2f8;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #101c29, #162536);
+      border: 1px solid #24384d;
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.25);
+      animation: fadeUp 0.35s ease both;
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: #9fb0bd;
+      line-height: 1.5;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 14px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 800;
+      border: none;
+      border-radius: 14px;
+      background: #e0b85a;
+      color: #07131f;
+      transition: all 0.2s ease;
+    }
+
+    button:hover {
+      background: #f0c96a;
+      transform: translateY(-2px);
+    }
+
+    .card {
+      background: #101c29;
+      border: 1px solid #24384d;
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+      animation: fadeUp 0.35s ease both;
+    }
+
+    .label {
+      color: #9fb0bd;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .value {
+      color: #eaf2f8;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .status-box {
+      padding: 12px;
+      border-radius: 999px;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 12px;
+      border: 1px solid #24384d;
+      animation: fadeUp 0.35s ease both;
+    }
+
+    .approved {
+      background: rgba(94, 224, 160, 0.14);
+      color: #5ee0a0;
+      border: 1px solid rgba(94, 224, 160, 0.35);
+    }
+
+    .flagged {
+      background: rgba(224, 184, 90, 0.16);
+      color: #e0b85a;
+      border: 1px solid rgba(224, 184, 90, 0.35);
+    }
+
+    .blocked {
+      background: rgba(255, 107, 107, 0.14);
+      color: #ff6b6b;
+      border: 1px solid rgba(255, 107, 107, 0.35);
+    }
+
+    .unknown {
+      background: #162536;
+      color: #9fb0bd;
+      border: 1px solid #24384d;
+    }
+
+    .info-box {
+      background: #162536;
+      color: #eaf2f8;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid #24384d;
+      margin-bottom: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      background: #162536;
+      color: #eaf2f8;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid #24384d;
+      max-height: 150px;
+      overflow-y: auto;
+      font-size: 12px;
+      line-height: 1.5;
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+
+    .footer {
+      text-align: center;
+      color: #6f8295;
+      font-size: 11px;
+      margin-top: 10px;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #24384d;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #101c29;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <div class="title">🛡️ RASID</div>
+    <div class="subtitle">
+      AI Context-Aware Online Safety Engine
+    </div>
+  </div>
+
+  <button id="analyzeBtn">Analyze Current Page</button>
+
+  <div id="statusBox" class="status-box unknown">No result yet</div>
+
+  <div class="card">
+    <div class="label">Decision</div>
+    <div id="decision" class="value">-</div>
+
+    <div class="label">Confidence Score</div>
+    <div id="confidence" class="value">-</div>
+
+    <div class="label">Confidence Level</div>
+    <div id="confidenceLevel" class="info-box">-</div>
+
+    <div class="label">Language</div>
+    <div id="language" class="value">-</div>
+  </div>
+
+  <div class="card">
+    <div class="label">Explanation</div>
+    <div id="explanation" class="info-box">-</div>
+
+    <div class="label">Technical Reasons</div>
+    <pre id="reasons">-</pre>
+  </div>
+
+  <div class="card">
+    <div class="label">Extracted Text Preview</div>
+    <pre id="preview">-</pre>
+  </div>
+
+  <div class="footer">
+    RASID • Real-time AI Ad Safety
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
