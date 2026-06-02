@@ -59,6 +59,7 @@ def init_db():
     CREATE TABLE IF NOT EXISTS dispute_requests (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         timestamp TEXT,
+        username TEXT,
         ad_text TEXT,
         ai_decision TEXT,
         confidence REAL,

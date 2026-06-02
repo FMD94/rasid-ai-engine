@@ -681,69 +681,120 @@ with tab5:
     if disputes_df.empty:
         st.info("No dispute requests found.")
     else:
-        for idx, row in disputes_df.iterrows():
-            st.markdown("---")
+        pending_df = disputes_df[disputes_df["status"] != "Resolved"]
+        resolved_df = disputes_df[disputes_df["status"] == "Resolved"]
 
-            decision = row["ai_decision"]
+        pending_tab, resolved_tab = st.tabs([
+            "Pending Requests",
+            "Resolved Requests"
+        ])
 
-            display_decision = {
-                "approved": "Safe",
-                "flagged": "Manipulative",
-                "blocked": "Fraud"
-            }.get(decision, decision)
+        with pending_tab:
+            if pending_df.empty:
+                st.success("No pending dispute requests.")
+            else:
+                for idx, row in pending_df.iterrows():
+                    st.markdown("---")
 
-            st.markdown(f"### Submission #{row['id']}")
-            st.write("**Status:**", row["status"])
-            st.write("**AI Decision:**", display_decision)
-            st.write("**Confidence:**", row["confidence"])
-            st.write("**Language:**", row["language"])
+                    decision = row["ai_decision"]
 
-            st.write("### Advertisement Text")
-            st.code(row["ad_text"])
+                    display_decision = {
+                        "approved": "Safe",
+                        "flagged": "Manipulative",
+                        "blocked": "Fraud"
+                    }.get(decision, decision)
 
-            st.write("### AI Reasons")
+                    st.markdown(f"### Submission #{row['id']}")
+                    st.write("**Status:**", row["status"])
+                    st.write("**User:**", row.get("username", "unknown"))
+                    st.write("**AI Decision:**", display_decision)
+                    st.write("**Confidence:**", row["confidence"])
+                    st.write("**Language:**", row["language"])
 
-            try:
-                reasons = json.loads(row["reasons"])
-                for reason in reasons:
-                    st.write(f"• {reason}")
-            except Exception:
-                st.write(row["reasons"])
+                    st.write("### Advertisement Text")
+                    st.code(row["ad_text"])
+                    image_path = row.get("image_path", "")
 
-            st.write("### User Appeal")
-            st.write(row["user_note"])
+                    if image_path and Path(image_path).exists():
+                        st.write("### Submitted Advertisement Image")
+                        st.image(image_path, use_container_width=True)
 
-            moderator_action = st.selectbox(
-                f"Moderator Action #{row['id']}",
-                [
-                    "Keep AI Decision",
-                    "Override to Safe",
-                    "Override to Manipulative",
-                    "Override to Fraud"
-                ],
-                key=f"mod_action_{row['id']}"
-            )
+                    st.write("### AI Reasons")
+                    try:
+                        reasons = json.loads(row["reasons"])
+                        for reason in reasons:
+                            st.write(f"• {reason}")
+                    except Exception:
+                        st.write(row["reasons"])
 
-            moderator_note = st.text_area(
-                "Moderator Note",
-                key=f"mod_note_{row['id']}"
-            )
+                    st.write("### User Appeal")
+                    st.write(row["user_note"])
 
-            if st.button(
-                f"Resolve Request #{row['id']}",
-                key=f"resolve_{row['id']}"
-            ):
-                conn = sqlite3.connect(DB_PATH)
-                cursor = conn.cursor()
+                    moderator_action = st.selectbox(
+                        f"Moderator Action #{row['id']}",
+                        [
+                            "Keep AI Decision",
+                            "Override to Safe",
+                            "Override to Manipulative",
+                            "Override to Fraud"
+                        ],
+                        key=f"mod_action_{row['id']}"
+                    )
 
-                cursor.execute("""
-                UPDATE dispute_requests
-                SET status = ?
-                WHERE id = ?
-                """, ("Resolved", row["id"]))
+                    moderator_note = st.text_area(
+                        "Moderator Note",
+                        key=f"mod_note_{row['id']}"
+                    )
 
-                conn.commit()
-                conn.close()
+                    if st.button(
+                        f"Resolve Request #{row['id']}",
+                        key=f"resolve_{row['id']}"
+                    ):
+                        conn = sqlite3.connect(DB_PATH)
+                        cursor = conn.cursor()
 
-                st.success("Request resolved successfully.")
-                st.rerun()
+                        cursor.execute("""
+                        UPDATE dispute_requests
+                        SET status = ?
+                        WHERE id = ?
+                        """, ("Resolved", row["id"]))
+
+                        conn.commit()
+                        conn.close()
+
+                        st.success("Request resolved successfully.")
+                        st.rerun()
+
+        with resolved_tab:
+            if resolved_df.empty:
+                st.info("No resolved requests yet.")
+            else:
+                display_resolved = resolved_df[[
+                    "id",
+                    "timestamp",
+                    "username",
+                    "ai_decision",
+                    "confidence",
+                    "language",
+                    "status",
+                    "user_note"
+                ]].copy()
+
+                display_resolved["ai_decision"] = display_resolved["ai_decision"].map({
+                    "approved": "Safe",
+                    "flagged": "Manipulative",
+                    "blocked": "Fraud"
+                }).fillna(display_resolved["ai_decision"])
+
+                display_resolved = display_resolved.rename(columns={
+                    "id": "ID",
+                    "timestamp": "Time",
+                    "username": "User",
+                    "ai_decision": "AI Decision",
+                    "confidence": "Confidence",
+                    "language": "Language",
+                    "status": "Status",
+                    "user_note": "User Appeal"
+                })
+
+                st.dataframe(display_resolved, use_container_width=True)
