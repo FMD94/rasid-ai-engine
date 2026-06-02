@@ -478,10 +478,39 @@ with tab1:
 with tab2:
     st.subheader("Human-in-the-Loop Moderator Review")
 
+    def make_review_label(i):
+        row = df.iloc[i]
+
+        timestamp = row.get("timestamp", "No time")
+        decision = row.get("decision_label", "Unknown")
+        input_type = row.get("input_type", "unknown")
+        confidence = row.get("confidence", 0)
+
+        reasons = parse_json_field(row.get("reasons", []), [])
+        preview = ""
+
+        if isinstance(reasons, list) and reasons:
+            preview = str(reasons[0])
+        else:
+            preview = str(row.get("explanation", ""))
+
+        preview = preview.replace("\n", " ").strip()
+
+        if len(preview) > 55:
+            preview = preview[:55] + "..."
+
+        return (
+            f"{timestamp} | "
+            f"{decision} | "
+            f"{input_type} | "
+            f"conf={confidence} | "
+            f"{preview}"
+        )
+
     review_index = st.selectbox(
-        "Select scan to review",
-        options=list(range(len(df))),
-        format_func=lambda i: f"{df.iloc[i].get('timestamp', 'No time')} | {df.iloc[i].get('decision_label', 'Unknown')} | {df.iloc[i].get('input_type', 'unknown')}"
+    "Select scan to review",
+    options=list(reversed(range(len(df)))),
+    format_func=make_review_label
     )
 
     selected = df.iloc[review_index]
@@ -496,6 +525,7 @@ with tab2:
         st.write("**Confidence:**", selected.get("confidence", 0))
         st.write("**Language:**", selected.get("language", "unknown"))
         st.write("**Input Type:**", selected.get("input_type", "unknown"))
+        st.write("**Source URL:**", selected.get("source_url", "Not available"))
         st.write("**Timestamp:**", selected.get("timestamp", "unknown"))
         deepfake_risk = selected.get("deepfake_risk", "unknown")
         deepfake_score = selected.get("deepfake_score", "N/A")

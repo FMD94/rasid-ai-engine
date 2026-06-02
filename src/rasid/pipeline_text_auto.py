@@ -120,10 +120,10 @@ def apply_safety_gate(text: str, result: dict) -> dict:
         result["decision"] = "flagged"
         reasons.append("Low-confidence fraud prediction was downgraded to manipulative.")
 
-    if result["decision"] == "flagged" and confidence < 0.75:
-        result["decision"] = "approved"
-        result["confidence"] = round(1 - confidence, 2)
-        reasons.append("Low-confidence manipulative prediction was treated as safe.")
+    #if result["decision"] == "flagged" and confidence < 0.75:
+    #   result["decision"] = "approved"
+    #   result["confidence"] = round(1 - confidence, 2)
+    #   reasons.append("Low-confidence manipulative prediction was treated as safe.")
 
     if result["decision"] == "flagged" and confidence < 0.85 and safe_context_detected:
         result["decision"] = "approved"

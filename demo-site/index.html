@@ -98,7 +98,75 @@
       margin-top: 12px;
       color: #cfd8e3;
       font-size: 14px;
+
+      .mixed-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-top: 25px;
+}
+
+.mixed-ad {
+  background: #07131f;
+  padding: 18px;
+  border-radius: 12px;
+  border: 2px solid #24384d;
+}
+
+.mixed-ad h3 {
+  margin-top: 0;
+}
+
+.ad-video {
+  width: 100%;
+  max-width: 700px;
+  max-height: 420px;
+  display: block;
+  margin: 15px auto;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+.safe-ad {
+  border-color: green;
+}
+
+.manipulative-ad {
+  border-color: orange;
+}
+
+.fraud-ad {
+  border-color: red;
+}
+
+.video-ad {
+  border-color: #e0b85a;
+}
+
+@media (max-width: 800px) {
+  .mixed-grid {
+    grid-template-columns: 1fr;
+  }
+}
     }
+
+
+    .mixed-ad.video-ad {
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.mixed-ad.video-ad video {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  max-height: 420px !important;
+  display: block !important;
+  margin: 12px auto !important;
+  object-fit: contain !important;
+  border-radius: 12px;
+}
   </style>
 </head>
 
@@ -106,13 +174,14 @@
 
 <header>
   <h1>RASID Demonstration Environment</h1>
-  <p>Controlled Bilingual Advertisement Testing Website</p>
+  <p>Bilingual Advertisement</p>
 </header>
 
 <div class="tabs">
   <button class="tab-btn active" onclick="showTab('safe')">Safe Advertisement</button>
   <button class="tab-btn" onclick="showTab('manipulative')">Manipulative Advertisement</button>
   <button class="tab-btn" onclick="showTab('fraud')">Fraud Advertisement</button>
+  <button class="tab-btn" onclick="showTab('mixed')">Mixed Media Test</button>
 </div>
 
 <!-- SAFE TAB -->
@@ -230,6 +299,50 @@
     <button class="nav-btn" onclick="nextAd('fraud')">Next ▶</button>
   </div>
   <div class="counter" id="fraud-counter">1 / 4</div>
+</div>
+
+<!-- MIXED MEDIA TAB -->
+<div id="mixed" class="tab-content">
+  <h2>Mixed Media Advertisement Test</h2>
+
+  <div class="mixed-grid">
+
+    <div class="mixed-ad safe-ad">
+      <h3>Safe Advertisement</h3>
+      <img src="images/safe_ad.png" class="ad-image" alt="Safe laptop advertisement">
+      <p class="ad-text">
+        ASUS Laptop with Intel Core i7 Processor, 16GB RAM and Official Warranty.
+      </p>
+    </div>
+
+    <div class="mixed-ad manipulative-ad">
+      <h3>Manipulative Advertisement</h3>
+      <img src="images/manipulative_ad.png" class="ad-image" alt="Manipulative limited offer advertisement">
+      <p class="ad-text">
+        Limited Time Offer! Only Today! Register Now! Don't Miss This Exclusive Deal!
+      </p>
+    </div>
+
+    <div class="mixed-ad fraud-ad">
+      <h3>Fraud Advertisement</h3>
+      <img src="images/fraud_ad.png" class="ad-image" alt="Fraud weight loss advertisement">
+      <p class="ad-text">
+        Guaranteed Profit. Zero Risk Investment. Double Your Money Instantly.
+      </p>
+    </div>
+
+    <div class="mixed-ad video-ad">
+      <h3>Experimental Video Advertisement</h3>
+      <video class="ad-video" controls muted>
+        <source src="videos/mixed_demo_video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <p class="ad-text">
+        Video-frame analysis is included as an experimental RASID feature.
+      </p>
+    </div>
+
+  </div>
 </div>
 
 <script>
