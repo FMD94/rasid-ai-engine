@@ -1,284 +1,775 @@
-# RASID — AI Context-Aware Online Safety Engine
+# 🛡️ RASID — AI Context-Aware Online Safety Engine
 
-**Version:** 2.0 · 2026  
-**Institution:** Almaarefa University · College of Engineering & Computer Science  
-**Supervisor:** Dr Mohammed Algabri  
-**Team:** Amina Atta · Faten Aldawood
+<p align="center">
+  <strong>Multilingual · Multimodal · Explainable AI · Human-in-the-Loop</strong>
+</p>
 
----
+<p align="center">
+  An AI-powered online advertising safety system for detecting
+  <strong>safe, manipulative, and fraudulent digital advertisements</strong>
+  across Arabic and English content.
+</p>
 
-## Overview
-
-RASID is an AI-powered multilingual advertisement analysis system that detects unsafe, manipulative, and fraudulent digital advertising. It analyses text, image, and video content in both Arabic and English, and gives moderators full visibility into every AI decision.
-
-**Detects:**
-- Manipulative and fraudulent advertisements
-- Emotionally exploitative content
-- Misleading promotional tactics
-- Unsafe digital advertising behaviour
-
-**Supports:**
-- Arabic and English advertisements
-- Text, image, and video analysis
-- Explainable AI (LIME)
-- Human-in-the-loop moderation with dispute resolution
-- Moderator dashboard and region policy review
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.11+-blue?logo=python" alt="Python">
+  <img src="https://img.shields.io/badge/FastAPI-API-009688?logo=fastapi" alt="FastAPI">
+  <img src="https://img.shields.io/badge/Streamlit-Dashboard-FF4B4B?logo=streamlit" alt="Streamlit">
+  <img src="https://img.shields.io/badge/NLP-AraBERT%20%7C%20BERT-orange" alt="NLP">
+  <img src="https://img.shields.io/badge/Explainable%20AI-LIME-purple" alt="LIME">
+  <img src="https://img.shields.io/badge/Languages-Arabic%20%7C%20English-green" alt="Languages">
+</p>
 
 ---
 
-## System Requirements
+## 📖 About RASID
+
+**RASID** is an AI-powered, context-aware online safety engine designed to analyze digital advertisements and identify potentially unsafe advertising behavior.
+
+Unlike simple keyword filtering, RASID combines **natural language processing, OCR, computer vision, language detection, rule-based analysis, explainable AI, and human moderation** to evaluate advertising content.
+
+RASID supports:
+
+- 🇸🇦 Arabic advertisement analysis
+- 🇬🇧 English advertisement analysis
+- 📝 Text analysis
+- 🖼️ Image and OCR analysis
+- 🎥 Video analysis
+- 🧠 Transformer-based classification
+- 🔍 Explainable AI using LIME
+- 🌍 Region-aware policy review
+- 👤 Human-in-the-loop moderation
+- ⚖️ User dispute resolution
+- 🗂️ Auditable analysis history
+- 🌐 Browser-based advertisement detection
+
+---
+
+# 🎬 RASID in Action
+
+RASID can analyze advertisements directly on webpages and visually mark detected content according to its classification.
+
+### 🟠 Manipulative Advertisement Detection
+
+Manipulative advertisements are highlighted in **orange**, allowing users to immediately identify content that may contain persuasive, misleading, urgency-based, or emotionally exploitative techniques.
+
+![RASID Manipulative Advertisement Detection](docs/images/rasid-manipulative-detection.png)
+
+---
+
+### 🔍 Browser Extension Analysis
+
+The RASID browser extension can analyze the current page and display additional information about the detected advertisement.
+
+The analysis panel includes:
+
+- Classification decision
+- Confidence score
+- Confidence level
+- Detected language
+- Human-readable explanation
+
+![RASID Browser Extension Analysis](docs/images/rasid-extension-analysis.png)
+
+---
+
+### 🟢 Safe Advertisement Detection
+
+Advertisements that do not contain detected harmful or manipulative signals are marked as **Safe** and highlighted in green.
+
+![RASID Safe Advertisement Detection](docs/images/rasid-safe-detection.png)
+
+---
+
+### 🌐 Real-World Web Detection
+
+RASID is designed to operate on advertisements embedded within real webpages rather than being limited to manually submitted test samples.
+
+The following example demonstrates safe advertisement detection on an English-language website:
+
+![RASID Real World Detection](docs/images/rasid-real-world-detection.png)
+
+RASID also supports pages containing **multiple advertisements**, allowing individual advertisements to receive independent classifications.
+
+![RASID Multiple Advertisement Detection](docs/images/rasid-multiple-ads.png)
+
+---
+
+# ✨ Core Features
+
+| Feature | Description |
+|---|---|
+| 🌐 Multilingual Analysis | Supports Arabic and English advertisements |
+| 📝 Text Analysis | Detects manipulative and fraudulent language |
+| 🖼️ Image Analysis | Extracts text through OCR before AI classification |
+| 🎥 Video Analysis | Processes frames, visual text, and speech |
+| 🧠 Transformer NLP | Uses AraBERT v2 for Arabic and BERT-base for English |
+| 🔍 Explainable AI | LIME highlights features influencing AI decisions |
+| 🌍 Regional Policy Review | Supports Saudi Arabia, GCC, EU, US, and general policy contexts |
+| 👤 Human Moderation | Moderators can review and challenge AI classifications |
+| ⚖️ Dispute Resolution | Users can dispute AI-generated decisions |
+| 🗂️ Audit Trail | Predictions and moderation activity are stored for review |
+| 🌐 Browser Integration | Detects and labels advertisements directly on webpages |
+| 🔌 REST API | FastAPI endpoints allow external applications to access RASID |
+
+---
+
+# 🧠 How RASID Works
+
+RASID uses a multi-stage analysis pipeline rather than relying on a single model.
+
+```text
+                         DIGITAL ADVERTISEMENT
+                                  │
+                                  ▼
+                     ┌────────────────────────┐
+                     │   Content Extraction   │
+                     └───────────┬────────────┘
+                                 │
+                ┌────────────────┼────────────────┐
+                ▼                ▼                ▼
+              TEXT             IMAGE            VIDEO
+                │                │                │
+                │               OCR        Frame Extraction
+                │                │           + OCR + Speech
+                └────────────────┼────────────────┘
+                                 ▼
+                       Language Detection
+                                 │
+                     ┌───────────┴───────────┐
+                     ▼                       ▼
+                  Arabic                   English
+                     │                       │
+                 AraBERT v2              BERT-base
+                     │                       │
+                     └───────────┬───────────┘
+                                 ▼
+                         Rule-Based Signals
+                                 │
+                                 ▼
+                         Risk Classification
+                                 │
+                ┌────────────────┼────────────────┐
+                ▼                ▼                ▼
+              SAFE         MANIPULATIVE       FRAUDULENT
+                                 │
+                                 ▼
+                       LIME Explanation
+                                 │
+                                 ▼
+                         Database Logging
+                                 │
+                                 ▼
+                       Moderator Dashboard
+                                 │
+                                 ▼
+                      Human Review / Dispute
+```
+
+This architecture allows RASID to combine automated AI analysis with human oversight.
+
+---
+
+# 🛡️ Risk Classification
+
+RASID classifies advertisements into three primary categories.
+
+| Classification | Meaning |
+|---|---|
+| 🟢 **Safe** | Normal advertising content with no significant harmful signals detected |
+| 🟠 **Manipulative** | Uses potentially exploitative persuasive techniques such as false urgency, emotional pressure, fear tactics, or misleading promotion |
+| 🔴 **Fraudulent** | Contains potentially deceptive or scam-like behavior such as phishing, impersonation, fake prizes, or dangerous claims |
+
+---
+
+# 🤖 AI & Technology Stack
+
+### Natural Language Processing
+
+| Language | Model |
+|---|---|
+| Arabic | AraBERT v2 |
+| English | BERT-base |
+
+A custom language router determines which NLP pipeline should process extracted advertisement content.
+
+### Computer Vision & Media Processing
+
+| Task | Technology |
+|---|---|
+| OCR | pytesseract / EasyOCR |
+| Image Processing | Pillow / OpenCV |
+| Video Processing | MoviePy / OpenCV |
+| Speech Processing | Speech transcription pipeline |
+| Deepfake Analysis | Prototype `deepfake_risk` and `deepfake_score` signals |
+
+### Explainability
+
+RASID integrates **LIME (Local Interpretable Model-Agnostic Explanations)** to provide insight into why a model produced a particular classification.
+
+### Backend & Interface
+
+| Layer | Technology |
+|---|---|
+| API | FastAPI |
+| Dashboard | Streamlit |
+| Visualization | Plotly |
+| Database | SQLite |
+| Browser Integration | Browser Extension |
+| Data Processing | pandas / NumPy |
+
+---
+
+# 🔍 Explainable AI
+
+AI moderation systems should not operate as unexplained black boxes.
+
+RASID uses **LIME** to identify textual features that contributed to an AI classification.
+
+Example:
+
+```json
+{
+  "lime_explanation": [
+    {
+      "word": "NOW",
+      "weight": 0.0135
+    }
+  ]
+}
+```
+
+These explanations are available through RASID's analysis reports and moderation logs.
+
+This allows moderators to examine **why** a particular advertisement was flagged instead of relying solely on the final classification.
+
+---
+
+# 👤 Human-in-the-Loop Moderation
+
+RASID is designed as a decision-support system rather than a completely autonomous moderation platform.
+
+```text
+AI Analysis
+     │
+     ▼
+Initial Classification
+     │
+     ▼
+Moderator Review
+     │
+     ├──── Accept AI Decision
+     │
+     └──── Submit Correction
+                 │
+                 ▼
+          Senior Admin Review
+                 │
+          ┌──────┴──────┐
+          ▼             ▼
+       Approve        Reject
+          │
+          ▼
+Approved Fine-Tuning Data
+```
+
+Moderators can review AI decisions and submit corrections with a written justification.
+
+Corrections are **not automatically used as training data**.
+
+Instead:
+
+1. A moderator reviews an AI decision.
+2. The moderator submits a correction and reason.
+3. The correction enters a review queue.
+4. A senior administrator approves or rejects it.
+5. Only approved corrections can be promoted to future fine-tuning data.
+
+This reduces the risk of incorrect or malicious moderator feedback affecting future model behavior.
+
+---
+
+# ⚖️ Dispute Resolution
+
+RASID also supports user-submitted disputes.
+
+Users can challenge an AI classification when they believe an advertisement has been incorrectly categorized.
+
+Moderators can then:
+
+- Review the original advertisement
+- Inspect the AI classification
+- Review confidence information
+- Examine AI reasoning
+- Read the user's dispute
+- Override the classification when appropriate
+- Record the final resolution
+
+All moderation activity is preserved in the audit trail.
+
+---
+
+# 🌍 Regional Policy Review
+
+Advertising requirements vary across jurisdictions.
+
+RASID includes a region policy review layer that allows moderators to evaluate advertisements using different policy contexts.
+
+Supported contexts include:
+
+- 🇸🇦 Saudi Arabia
+- 🌍 GCC
+- 🇪🇺 European Union
+- 🇺🇸 United States
+- 🌐 General
+
+This layer complements the AI classification by giving moderators additional policy context during review.
+
+---
+
+# 📊 Moderator Dashboard
+
+RASID includes a Streamlit-based moderation dashboard for inspecting AI activity and managing human review.
+
+| Tab | Purpose |
+|---|---|
+| 📊 **Overview** | Displays scan statistics, risk distribution, language breakdown, input types, and recent analyses |
+| 👤 **Moderator Review** | Review classifications, submit overrides, and record moderation notes |
+| 🌍 **Region Policy Check** | Evaluate advertisements using region-specific policy criteria |
+| 🗂️ **Logs** | Inspect analysis history, confidence scores, explanations, deepfake signals, and moderator activity |
+| ⚠️ **Dispute Requests** | Review and resolve user challenges to AI classifications |
+
+---
+
+# 🔌 REST API
+
+RASID exposes its analysis capabilities through a FastAPI backend.
+
+## Text Analysis
+
+```http
+POST /analyze/text/auto
+```
+
+Arabic and English are automatically detected.
+
+### Example Input
+
+```json
+{
+  "text": "Guaranteed profit within 24 hours"
+}
+```
+
+### Example Response
+
+```json
+{
+  "classification": "fraudulent",
+  "confidence": 0.91,
+  "language": "en",
+  "reasons": [
+    "Detected high-risk promotional claim"
+  ]
+}
+```
+
+---
+
+## Image Analysis
+
+```http
+POST /analyze/image
+```
+
+Supported formats:
+
+```text
+JPG
+PNG
+WEBP
+```
+
+Pipeline:
+
+```text
+Image
+  ↓
+OCR
+  ↓
+Language Detection
+  ↓
+Transformer Classification
+  ↓
+Risk Analysis
+  ↓
+LIME Explanation
+  ↓
+Database Storage
+```
+
+---
+
+## Video Analysis
+
+```http
+POST /analyze/video
+```
+
+Supported formats:
+
+```text
+MP4
+MOV
+AVI
+```
+
+Pipeline:
+
+```text
+Video
+  │
+  ├── Frame Extraction
+  │       ↓
+  │      OCR
+  │
+  ├── Speech Extraction
+  │       ↓
+  │   Transcription
+  │
+  └──────────┬──────────
+             ↓
+       Content Analysis
+             ↓
+       Risk Aggregation
+             ↓
+       Classification
+```
+
+---
+
+# 🗄️ Database
+
+RASID currently uses SQLite.
+
+```text
+logs/rasid.db
+```
+
+The database maintains AI decisions and human moderation activity.
+
+| Table | Purpose |
+|---|---|
+| `analysis_logs` | Predictions, confidence, language, timestamps, explanations, and deepfake signals |
+| `moderator_reviews` | Moderator decisions, corrections, notes, and audit history |
+| `dispute_requests` | User disputes, AI context, status, and moderator resolution |
+
+---
+
+# 📁 Project Structure
+
+```text
+rasid-ai-engine/
+│
+├── src/
+│   ├── rasid/
+│   │   └── ...
+│   │
+│   ├── nlp/
+│   │   └── ...
+│   │
+│   └── vision/
+│       └── ...
+│
+├── data/
+├── models/
+├── logs/
+│   └── rasid.db
+│
+├── archive/
+├── docs/
+│   └── images/
+│
+├── dashboard.py
+├── requirements.txt
+└── README.md
+```
+
+---
+
+# 🚀 Getting Started
+
+## Requirements
 
 ### Hardware
 
 | Component | Minimum |
-|-----------|---------|
-| Processor | Intel i5 / AMD Ryzen 5 |
+|---|---|
+| Processor | Intel Core i5 / AMD Ryzen 5 |
 | RAM | 8 GB |
-| Storage | 10 GB free space |
-| GPU | NVIDIA GPU (optional) |
-| Internet | Required for deployment and API testing |
+| Storage | 10 GB free |
+| GPU | NVIDIA GPU — optional |
+| Internet | Required for deployment/API testing |
 
 ### Software
 
-| Software | Version |
-|----------|---------|
+| Software | Requirement |
+|---|---|
 | Python | 3.11+ |
 | VS Code | Latest |
-| Streamlit | Latest |
-| FastAPI | Latest |
-| SQLite | Built-in with Python |
 | Git | Latest |
+| FastAPI | See `requirements.txt` |
+| Streamlit | See `requirements.txt` |
+| SQLite | Included with Python |
 
 ---
 
-## Project Structure
+# ⚙️ Installation
 
-```
-rasid-ai-engine/
-├── src/
-│   ├── rasid/
-│   ├── nlp/
-│   └── vision/
-├── archive/
-├── data/
-├── dashboard.py
-├── requirements.txt
-├── logs/
-│   └── rasid.db
-└── models/
-```
-
----
-
-## Installation
+### 1. Clone the repository
 
 ```bash
-# 1. Clone the repository
 git clone https://github.com/FMD94/rasid-ai-engine.git
+cd rasid-ai-engine
+```
 
-# 2. Open the folder in VS Code
+### 2. Create a virtual environment
 
-# 3. Create a virtual environment
+```bash
 python -m venv .venv
+```
 
-# 4. Activate the environment (Windows)
+### 3. Activate it
+
+#### Windows
+
+```bash
 .venv\Scripts\activate
+```
 
-# 5. Install dependencies
+#### macOS / Linux
+
+```bash
+source .venv/bin/activate
+```
+
+### 4. Install dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
-### Key Dependencies
+---
 
-`moviepy` · `opencv-python` · `pytesseract` · `scikit-learn` · `plotly` · `pandas` · `pillow` · `numpy` · `python-dotenv` · `pydantic` · `streamlit` · `fastapi`
+# 🔐 Environment Configuration
+
+Sensitive configuration such as administrator credentials should **not be committed directly to the repository**.
+
+Create a local `.env` file:
+
+```env
+ADMIN_USERNAME=your_admin_username
+ADMIN_PASSWORD=your_secure_password
+```
+
+Add `.env` to `.gitignore`:
+
+```gitignore
+.env
+```
+
+For public repositories, an `.env.example` can be provided:
+
+```env
+ADMIN_USERNAME=
+ADMIN_PASSWORD=
+```
 
 ---
 
-## Running RASID
+# ▶️ Running RASID
 
-### Start the API Server
+RASID uses separate API and dashboard services.
+
+## Start the API
 
 ```bash
 python -m uvicorn src.rasid.api:app --reload
 ```
 
-| Page | URL |
-|------|-----|
-| API Base | http://127.0.0.1:8000 |
-| Swagger Docs | http://127.0.0.1:8000/docs |
+Then open:
 
-### Start the Dashboard
+```text
+API:     http://127.0.0.1:8000
+Swagger: http://127.0.0.1:8000/docs
+```
+
+## Start the Dashboard
+
+Open another terminal:
 
 ```bash
 streamlit run dashboard.py
 ```
 
-| Page | URL |
-|------|-----|
-| Dashboard | http://localhost:8501 |
+Then open:
 
-### Shutdown
-
-Press `CTRL + C` in each terminal window to stop services safely.
-
----
-
-## Login
-
-| Username | Password |
-|----------|----------|
-| admin | rasid123 |
-
-> ⚠️ Change the default password immediately after first login.
-
----
-
-## AI Stack
-
-| Component | Model / Tool |
-|-----------|-------------|
-| Arabic NLP | AraBERT v2 |
-| English NLP | BERT-base |
-| OCR | pytesseract / EasyOCR |
-| Video processing | MoviePy, OpenCV |
-| Explainability | LIME |
-| Deepfake detection | Prototype signal (deepfake_risk + deepfake_score) |
-| Routing | Custom language router |
-| Backend | FastAPI |
-| Dashboard | Streamlit + Plotly |
-| Database | SQLite |
-
----
-
-## API Endpoints
-
-### Text Analysis
-
-- **Endpoint:** `POST /analyze/text/auto`
-- **Languages:** Arabic and English (auto-detected)
-
-**Example:**
-```json
-// Input
-"Guaranteed profit within 24 hours"
-
-// Output
-{
-  "decision": "blocked",
-  "confidence": 0.91,
-  "language": "en",
-  "reasons": ["Rule matched blocked phrase: guaranteed profit"]
-}
+```text
+http://localhost:8501
 ```
 
-### Image Analysis
+## Stop RASID
 
-- **Endpoint:** `POST /analyze/image`
-- **Formats:** JPG, PNG, WEBP
-- **Pipeline:** OCR → Language detection → Transformer classification → LIME explanation → DB storage
+Press:
 
-### Video Analysis
-
-- **Endpoint:** `POST /analyze/video`
-- **Formats:** MP4, MOV, AVI
-- **Pipeline:** Frame extraction → OCR per frame → Speech transcription → AI classification → Risk aggregation
-
----
-
-## Risk Classification
-
-| Category | Description |
-|----------|-------------|
-| Safe | Normal advertisement. No harmful elements detected. |
-| Manipulative | Uses emotional or persuasive exploitation — dark patterns, false urgency, fear tactics. |
-| Fraudulent | Dangerous, deceptive, or scam-like behaviour — phishing, impersonation, fake prizes. |
-
----
-
-## Explainable AI (LIME)
-
-RASID uses LIME to highlight exactly which words influenced the AI verdict.
-
-```json
-"lime_explanation": [
-  { "word": "NOW", "weight": 0.0135 }
-]
+```text
+CTRL + C
 ```
 
-LIME explanations appear in the report view and the Logs tab of the dashboard.
+in each running terminal.
 
 ---
 
-## Dashboard Tabs
+# 📦 Key Dependencies
 
-| Tab | Description |
-|-----|-------------|
-| 📊 Overview | Live summary: total scans, risk distribution, language breakdown, input type charts, latest analysis |
-| 👤 Moderator Review | Review AI decisions, override classifications, add notes, save to audit log |
-| 🌍 Region Policy Check | Apply region-specific rules (Saudi Arabia, GCC, EU, US, General) per policy area |
-| 🗂 Logs | Full history: timestamps, language, confidence, deepfake risk/score, AI reasons, moderator reviews |
-| ⚠️ Dispute Requests | Review and resolve user-submitted disputes against AI decisions |
+RASID uses several open-source libraries across its analysis pipeline.
 
----
+```text
+fastapi
+streamlit
+pandas
+numpy
+scikit-learn
+plotly
+pillow
+opencv-python
+moviepy
+pytesseract
+python-dotenv
+pydantic
+```
 
-## Human-in-the-Loop Moderation
+Additional NLP and explainability dependencies are defined in:
 
-RASID is not fully automated. Moderators can review and correct AI decisions, but corrections are **queued for senior admin approval** before entering the fine-tuning pipeline — protecting the model from incorrect or malicious feedback.
-
-**Workflow:**
-1. Moderator reviews an AI decision and submits a correction with a written reason
-2. Correction enters a review queue
-3. Senior admin approves or rejects the correction
-4. Only approved corrections are promoted to fine-tuning data
-
-Users can also submit **dispute requests** challenging an AI decision. Moderators review disputes and can override the outcome directly from the Dispute Requests tab.
-
----
-
-## Database
-
-RASID uses SQLite stored at `logs/rasid.db`.
-
-| Table | Stores |
-|-------|--------|
-| `analysis_logs` | AI predictions, confidence scores, language, timestamps, LIME explanations, deepfake signals |
-| `moderator_reviews` | Moderator decisions, override notes, review history, full audit trail |
-| `dispute_requests` | User appeals, AI decision context, moderator resolution status |
+```text
+requirements.txt
+```
 
 ---
 
-## Troubleshooting
+# 🛠️ Troubleshooting
 
-**API not running**
+### API does not start
+
+Run:
+
 ```bash
 python -m uvicorn src.rasid.api:app --reload
-# Check terminal for error messages
 ```
 
-**Dashboard not updating**
-- Confirm the API is running
-- Confirm `logs/rasid.db` exists and SQLite is connected
+Then inspect the terminal output for the underlying exception.
 
-**Browser extension not working**
-- Check browser permissions
-- Confirm API is accessible at localhost
-- Verify `popup.js` is correctly configured
+### Dashboard does not update
 
-**Database errors**
+Check that:
+
+- The API service is running.
+- `logs/rasid.db` exists.
+- The application can access SQLite.
+- The configured API endpoint is correct.
+
+### Browser extension does not analyze advertisements
+
+Verify:
+
+- Browser permissions are enabled.
+- The RASID API is running.
+- The API is reachable from the browser.
+- Extension configuration points to the correct API address.
+
+### Reset the development database
+
+> ⚠️ This permanently removes locally stored analysis history.
+
+Windows:
+
 ```bash
-# Reset the database (Windows)
 del logs\rasid.db
-# Then restart the API
 ```
+
+macOS / Linux:
+
+```bash
+rm logs/rasid.db
+```
+
+Restart RASID afterward to initialize a new database.
 
 ---
 
-## Planned Enhancements
+# 🗺️ Roadmap
 
-- Full deepfake detection (image and video)
-- SHAP explainability (alongside LIME)
-- Real-time browser alerts
-- Cloud deployment
-- Multi-user moderation with role management
-- Live social media monitoring
-- Advanced multimodal content fusion
+Future development areas include:
+
+- [ ] Full deepfake image detection
+- [ ] Full deepfake video detection
+- [ ] SHAP explainability alongside LIME
+- [ ] Real-time browser safety alerts
+- [ ] Cloud deployment
+- [ ] Multi-user authentication
+- [ ] Role-based access control
+- [ ] Live social-media advertisement monitoring
+- [ ] Advanced multimodal fusion
+- [ ] Expanded regional policy support
+- [ ] Improved Arabic dialect understanding
+- [ ] Continuous model evaluation
+- [ ] Moderator-approved model feedback pipeline
+
+---
+
+# 🎥 Video Demo
+
+A full demonstration of the RASID workflow will be added here.
+
+<!--
+After uploading the demo video to GitHub, replace this section
+with the GitHub-generated video/asset URL.
+-->
+
+**Demo coming soon.**
+
+---
+
+# 🎓 Academic Project
+
+RASID was developed as a Computer Science project at:
+
+**Almaarefa University**  
+College of Engineering & Computer Science
+
+**Version:** 2.0 — 2026
+
+**Supervisor:**  
+Dr Mohammed Algabri
+
+**Team:**
+
+- Amina Atta
+- Faten Aldawood
+
+---
+
+# ⚠️ Disclaimer
+
+RASID is an AI-assisted research and moderation system.
+
+Its classifications should not be interpreted as legal determinations of fraud, regulatory violations, or malicious intent.
+
+AI predictions may contain false positives or false negatives. Human review remains an important part of the RASID moderation workflow.
+
+---
+
+<p align="center">
+  <strong>RASID</strong><br>
+  AI Context-Aware Online Safety Engine<br><br>
+  Building safer and more transparent digital advertising through multilingual, explainable AI.
+</p>
