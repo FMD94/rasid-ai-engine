@@ -726,16 +726,23 @@ Future development areas include:
 
 ---
 
-# 🎥 Video Demo
+<h1>🎥 Video Demo</h1>
 
-A full demonstration of the RASID workflow will be added here.
+<p>
+See RASID in action — detecting and analyzing digital advertisements
+on real webpages, classifying their risk level, and presenting the results
+through the RASID browser extension.
+</p>
 
-<!--
-After uploading the demo video to GitHub, replace this section
-with the GitHub-generated video/asset URL.
--->
+<a href="https://drive.google.com/file/d/1pvjfyim-ZZ5XaJ-VF059tNsGgDWcCtTc/view?usp=sharing">
+  <img src="docs/images/rasid-extension-analysis.png"
+       alt="Watch the RASID AI Online Safety Engine Demo"
+       width="800">
+</a>
 
-**Demo coming soon.**
+<p>
+  <strong>▶ Click the image above to watch the full RASID demonstration.</strong>
+</p>
 
 ---
 
